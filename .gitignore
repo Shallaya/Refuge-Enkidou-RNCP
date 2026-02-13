@@ -5,7 +5,7 @@
 /.env.test
 /.env.prod
 /.env.local
-/.env.local.php
+/.env.local.phpgit 
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
