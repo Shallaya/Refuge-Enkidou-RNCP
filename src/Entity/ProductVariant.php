@@ -1,0 +1,208 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\ProductVariantRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+class ProductVariant
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 100, unique: true)]
+    private ?string $sku = null;
+
+    #[ORM\Column]
+    private ?int $stock = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2)]
+    private ?string $price = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $material = '';
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $color = '';
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    private ?string $weight = '';
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $size = '';
+
+    #[ORM\Column]
+    private ?bool $isActive = null;
+
+    #[ORM\ManyToOne(inversedBy: 'productVariants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Product $product = null;
+
+    // ======================
+    // LIFECYCLE
+    // ======================
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        if (!$this->sku) {
+            $this->generateSku();
+        }
+    }
+
+    // ======================
+    // MÉTHODES MÉTIER
+    // ======================
+
+    private function generateSku(): void
+    {
+        $parts = [];
+
+        $product = $this->getProduct();
+
+        if (!$product) {
+            throw new \LogicException('Le produit doit être défini avant de générer le SKU');
+        }
+
+        $parts[] = 'PRD-' . $product->getId();
+
+        $parts[] = $this->sanitize($product->getCode());
+
+        if ($this->material) {
+            $parts[] = $this->sanitize($this->material);
+        }
+
+        if ($this->size) {
+            $parts[] = $this->sanitize($this->size);
+        }
+
+        if ($this->weight) {
+            $parts[] = $this->sanitize((string)$this->weight);
+        }
+
+        if ($this->color) {
+            $parts[] = $this->sanitize($this->color);
+        }
+
+        $this->sku = implode('-', $parts);
+    }
+
+    private function sanitize(string $value): string
+    {
+        $value = iconv('UTF-8', 'ASCII//TRANSLIT', $value);
+        $value = preg_replace('/[^A-Za-z0-9]/', '', $value);
+
+        return strtoupper($value);
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getSku(): ?string
+    {
+        return $this->sku;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): static
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getMaterial(): ?string
+    {
+        return $this->material;
+    }
+
+    public function setMaterial(?string $material): static
+    {
+        $this->material = $material;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getWeight(): ?string
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(?string $weight): static
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function setSize(?string $size): static
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+}
