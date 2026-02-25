@@ -60,42 +60,39 @@ class ProductVariant
     // ======================
 
     private function generateSku(): void
-    {
-        $parts = [];
-
-        $product = $this->getProduct();
-
-        if (!$product) {
-            throw new \LogicException('Le produit doit être défini avant de générer le SKU');
-        }
-
-        $parts[] = 'PRD-' . $product->getId();
-
-        $parts[] = $this->sanitize($product->getCode());
-
-        if ($this->material) {
-            $parts[] = $this->sanitize($this->material);
-        }
-
-        if ($this->size) {
-            $parts[] = $this->sanitize($this->size);
-        }
-
-        if ($this->weight) {
-            $parts[] = $this->sanitize((string)$this->weight);
-        }
-
-        if ($this->color) {
-            $parts[] = $this->sanitize($this->color);
-        }
-
-        $this->sku = implode('-', $parts);
+{
+    $product = $this->getProduct();
+    if (!$product) {
+        throw new \LogicException('Le produit doit être défini avant de générer le SKU');
     }
+
+    $parts = [];
+
+    // On ajoute toujours le préfixe + ID
+    $parts[] = 'PRD-' . $product->getId();
+
+    // Liste des champs à inclure dans le SKU
+    $fields = [
+        $product->getCode(),
+        $this->material,
+        $this->size,
+        $this->weight,
+        $this->color
+    ];
+
+    foreach ($fields as $field) {
+        if ($field !== null && $field !== '') {
+            $parts[] = $this->sanitize((string) $field);
+        }
+    }
+
+    $this->sku = implode('-', $parts);
+}
 
     private function sanitize(string $value): string
     {
-        $value = iconv('UTF-8', 'ASCII//TRANSLIT', $value);
-        $value = preg_replace('/[^A-Za-z0-9]/', '', $value);
+        $value = (string) iconv('UTF-8', 'ASCII//TRANSLIT', $value);
+        $value = (string) preg_replace('/[^A-Za-z0-9]/', '', $value);
 
         return strtoupper($value);
     }

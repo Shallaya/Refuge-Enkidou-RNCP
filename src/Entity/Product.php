@@ -36,6 +36,9 @@ class Product
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+    
+    #[ORM\Column(length: 100)]
+    private ?string $code = null;
 
     /**
      * @var Collection<int, EcoLabel>
@@ -54,9 +57,6 @@ class Product
      */
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products')]
     private Collection $tags;
-
-    #[ORM\Column(length: 100)]
-    private ?string $code = null;
 
     /**
      * @var Collection<int, ProductVariant>
@@ -168,6 +168,18 @@ class Product
         return $this;
     }
 
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, EcoLabel>
      */
@@ -248,18 +260,6 @@ class Product
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
-
-        return $this;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): static
-    {
-        $this->code = $code;
 
         return $this;
     }

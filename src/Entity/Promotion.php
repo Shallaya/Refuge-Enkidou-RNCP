@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\DiscountType;
+use App\Enum\PromotionCategory;
 use App\Repository\PromotionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +19,7 @@ class Promotion
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?string $discountPercentage = null;
+    private ?string $discountValue = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $startDate = null;
@@ -33,10 +34,16 @@ class Promotion
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = false;
 
     #[ORM\Column(enumType: DiscountType::class)]
     private ?DiscountType $discountType = null;
+
+    #[ORM\Column(enumType: PromotionCategory::class)]
+    private ?PromotionCategory $prCategory = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $year = null;
 
     /**
      * @var Collection<int, Product>
@@ -54,14 +61,14 @@ class Promotion
         return $this->id;
     }
 
-    public function getDiscountPercentage(): ?string
+    public function getDiscountValue(): ?string
     {
-        return $this->discountPercentage;
+        return $this->discountValue;
     }
 
-    public function setDiscountPercentage(string $discountPercentage): static
+    public function setDiscountValue(string $discountValue): static
     {
-        $this->discountPercentage = $discountPercentage;
+        $this->discountValue = $discountValue;
 
         return $this;
     }
@@ -134,6 +141,30 @@ class Promotion
     public function setDiscountType(DiscountType $discountType): static
     {
         $this->discountType = $discountType;
+
+        return $this;
+    }    
+
+    public function getPrCategory(): ?PromotionCategory
+    {
+        return $this->prCategory;
+    }
+
+    public function setPrCategory(?PromotionCategory $prCategory): static
+    {
+        $this->prCategory = $prCategory;
+
+        return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(?int $year): static
+    {
+        $this->year = $year;
 
         return $this;
     }

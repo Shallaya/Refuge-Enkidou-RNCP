@@ -4,6 +4,7 @@ namespace App\EventListener;
 
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class SlugListener
@@ -15,6 +16,9 @@ class SlugListener
         $this->slugger = $slugger;
     }
 
+    /**
+     * @param LifecycleEventArgs<EntityManagerInterface> $args
+     */
     public function prePersist(LifecycleEventArgs $args): void
     {
         $this->handleSlug($args->getObject());
@@ -22,6 +26,7 @@ class SlugListener
 
     public function preUpdate(PreUpdateEventArgs $args): void
     {
+        /** @var object $entity */
         $entity = $args->getObject();
 
         if (!method_exists($entity, 'getName') || !method_exists($entity, 'setSlug')) {
@@ -39,7 +44,9 @@ class SlugListener
 
         // IMPORTANT : on force Doctrine à voir la modification
         $em = $args->getObjectManager();
-        $meta = $em->getClassMetadata(get_class($entity));
+        $className = get_class($entity);
+        /** @var class-string<object> $className */
+        $meta = $em->getClassMetadata($className);
         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $entity);
     }
 
