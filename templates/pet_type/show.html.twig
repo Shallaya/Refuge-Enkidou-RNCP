@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ petType.name }} - Le Refuge d'Enkidou{% endblock %}
+
+{% block body %}
+<div class="pet-type-page">
+    <div class="container">
+        {# En-tête de page #}
+        <header class="page-header">
+            <h1>🐾 Produits pour {{ petType.name|lower }}s</h1>
+            <p class="page-header__subtitle">
+                {{ products|length }} produit{{ products|length > 1 ? 's' : '' }} disponible{{ products|length > 1 ? 's' : '' }}
+            </p>
+        </header>
+        
+        {# Layout avec sidebar (desktop) et toggle (mobile) #}
+        <div class="pet-type-layout">
+            {# Sidebar des catégories - Composant réutilisable #}
+            {% include 'components/_category_sidebar.html.twig' %}
+            
+            {# Zone principale des produits #}
+            <main class="pet-type-layout__main">
+                {# Si un filtre de catégorie est actif #}
+                {% if selectedCategorySlug %}
+                    {# Récupérer la catégorie sélectionnée #}
+                    {% set selectedCategory = null %}
+                    {% for category in categories %}
+                        {% if category.slug == selectedCategorySlug %}
+                            {% set selectedCategory = category %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {# Afficher le titre de la catégorie #}
+                    {% if selectedCategory %}
+                        <div class="category-header">
+                            <h2 class="category-header__title">{{ selectedCategory.name }}</h2>
+                            {% if selectedCategory.products|length > 0 %}
+                                <p class="category-header__count">
+                                    {{ selectedCategory.products|length }} article{{ selectedCategory.products|length > 1 ? 's' : '' }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    {% if products|length > 0 %}
+                        {# Grouper les produits par sous-catégorie si nécessaire #}
+                        {% set hasSubCategories = false %}
+                        {% for product in products %}
+                            {% if product.category.parent %}
+                                {% set hasSubCategories = true %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if hasSubCategories %}
+                            {# Grouper par sous-catégorie #}
+                            {% set productsBySubCategory = {} %}
+                            {% for product in products %}
+                                {% set subCatName = product.category.name %}
+                                {% if productsBySubCategory[subCatName] is not defined %}
+                                    {% set productsBySubCategory = productsBySubCategory|merge({(subCatName): []}) %}
+                                {% endif %}
+                                {% set productsBySubCategory = productsBySubCategory|merge({(subCatName): productsBySubCategory[subCatName]|merge([product])}) %}
+                            {% endfor %}
+                            
+                            {# Afficher chaque sous-catégorie #}
+                            {% for subCategoryName, subCategoryProducts in productsBySubCategory %}
+                                <section class="subcategory-section">
+                                    <h3 class="subcategory-section__title">{{ subCategoryName }}</h3>
+                                    <div class="products__grid">
+                                        {% for product in subCategoryProducts %}
+                                            {% include 'components/_product_card.html.twig' with {product: product} %}
+                                        {% endfor %}
+                                    </div>
+                                </section>
+                            {% endfor %}
+                        {% else %}
+                            {# Affichage simple sans sous-catégories #}
+                            <div class="products__grid">
+                                {% for product in products %}
+                                    {% include 'components/_product_card.html.twig' with {product: product} %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="no-results">
+                            <p class="no-results__icon">🔍</p>
+                            <p class="no-results__text">Aucun produit trouvé dans cette catégorie.</p>
+                            <a href="{{ path('app_pet_type_show', {slug: petType.slug}) }}" class="btn btn--primary">
+                                Voir tous les produits
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                {% else %}
+                    {# Affichage normal sans filtre (tous les produits) #}
+                    <div class="products__grid">
+                        {% for product in products %}
+                            {% include 'components/_product_card.html.twig' with {product: product} %}
+                        {% else %}
+                            <div class="no-results">
+                                <p class="no-results__icon">🐾</p>
+                                <p class="no-results__text">Aucun produit disponible pour le moment.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}

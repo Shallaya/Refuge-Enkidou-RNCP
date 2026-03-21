@@ -1,0 +1,453 @@
+/*
+ * PET-TYPE PAGE - Styles complémentaires
+ * Fichier: pet-type.css
+ * 
+ * Ce fichier contient UNIQUEMENT les styles spécifiques à la page /animaux/{slug}
+ * Il s'appuie sur les variables et styles de base définis dans home.css
+ * 
+ * IMPORTANT : Ce fichier doit être chargé APRÈS home.css
+ */
+
+/* ==========================================================================
+   1. LAYOUT - Pet Type Page avec Sidebar
+   ========================================================================== */
+
+/* Override du container pour cette page : aligner à gauche au lieu du centre */
+/* IMPORTANT : Utiliser !important pour surcharger home.css */
+.pet-type-page .container {
+    margin-inline: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: 100% !important;
+    padding-inline: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+    .pet-type-page .container {
+        padding-inline: var(--space-md);
+    }
+}
+
+@media (min-width: 1024px) {
+    .pet-type-page .container {
+        padding-inline: var(--space-lg);
+    }
+}
+
+.pet-type-layout {
+    display: block;
+    width: 100%;
+}
+
+.pet-type-layout__main {
+    width: 100%;
+}
+
+/* Desktop: Layout en 2 colonnes (sidebar + main) */
+@media (min-width: 768px) {
+    .pet-type-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: var(--space-lg);
+        align-items: start;
+    }
+}
+
+@media (min-width: 1024px) {
+    .pet-type-layout {
+        grid-template-columns: 320px 1fr;
+        gap: var(--space-xl);
+    }
+}
+
+/* ==========================================================================
+   2. SIDEBAR - Navigation des catégories
+   ========================================================================== */
+
+.category-sidebar {
+    position: relative;
+    width: 100%;
+}
+
+/* --- Toggle Button (Mobile uniquement) --- */
+.category-sidebar__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-white);
+    border: 2px solid var(--color-sand);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-soil);
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-bottom: var(--space-sm);
+}
+
+.category-sidebar__toggle:hover {
+    border-color: var(--color-moss);
+    background-color: rgba(168, 197, 160, 0.05);
+}
+
+.category-sidebar__toggle:active {
+    transform: scale(0.98);
+}
+
+.category-sidebar__toggle-icon {
+    display: flex;
+    align-items: center;
+    margin-right: var(--space-xs);
+    color: var(--color-bark);
+}
+
+.category-sidebar__toggle-text {
+    flex: 1;
+    text-align: left;
+}
+
+.category-sidebar__toggle-arrow {
+    font-size: 0.875rem;
+    transition: transform var(--transition);
+    color: var(--color-moss);
+}
+
+.category-sidebar__toggle--open .category-sidebar__toggle-arrow {
+    transform: rotate(180deg);
+}
+
+/* Masquer le toggle en desktop */
+@media (min-width: 768px) {
+    .category-sidebar__toggle {
+        display: none;
+    }
+}
+
+/* --- Menu des catégories --- */
+.category-sidebar__menu {
+    /* Mobile: menu déroulant caché par défaut */
+    display: none !important;
+    background-color: #ffffff;
+    border: 1px solid #e8dfd0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(59, 47, 47, 0.08);
+}
+
+/* Mobile: menu ouvert - FORCE avec !important */
+.category-sidebar__menu--open {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Desktop: menu toujours visible et sticky */
+/* La sidebar reste TOUJOURS visible même avec 100+ produits */
+@media (min-width: 768px) {
+    .category-sidebar {
+        position: sticky;
+        top: var(--space-lg);
+        align-self: start; /* CRUCIAL : empêche la sidebar de descendre */
+    }
+    
+    .category-sidebar__menu {
+        display: block !important;
+        position: relative; /* Pas sticky ici, c'est .category-sidebar qui l'est */
+        padding: var(--space-md) !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}
+
+/* --- Titre de la sidebar --- */
+.category-sidebar__title {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-soil);
+    margin: 0 0 var(--space-sm) 0;
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--color-sand);
+}
+
+@media (min-width: 768px) {
+    .category-sidebar__title {
+        font-size: 1.25rem;
+    }
+}
+
+/* --- Liste des catégories --- */
+.category-sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-sidebar__sublist {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-xs) 0 var(--space-xs) var(--space-sm);
+}
+
+.category-sidebar__item {
+    margin-bottom: 0.25rem;
+}
+
+.category-sidebar__item--parent {
+    margin-bottom: var(--space-xs);
+}
+
+/* --- Liens de catégories --- */
+.category-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    color: var(--color-bark);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.category-sidebar__link:hover {
+    background-color: rgba(168, 197, 160, 0.08);
+    color: var(--color-soil);
+    transform: translateX(3px);
+}
+
+/* Lien actif */
+.category-sidebar__link--active {
+    background-color: rgba(92, 122, 94, 0.12);
+    color: var(--color-moss-dark);
+    font-weight: 700;
+    border-left: 3px solid var(--color-moss);
+}
+
+.category-sidebar__link--active:hover {
+    background-color: rgba(92, 122, 94, 0.18);
+}
+
+/* Sous-catégorie (enfant) */
+.category-sidebar__item--child .category-sidebar__link {
+    padding: 0.5rem var(--space-xs);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* --- Icônes et badges --- */
+.category-sidebar__icon {
+    flex-shrink: 0;
+    font-size: 1.25rem;
+}
+
+.category-sidebar__name {
+    flex: 1;
+}
+
+.category-sidebar__count {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--color-bark);
+    background-color: var(--color-linen);
+    padding: 0.2rem 0.5rem;
+    border-radius: 99px;
+    font-weight: 700;
+    min-width: 28px;
+    text-align: center;
+}
+
+.category-sidebar__link--active .category-sidebar__count {
+    background-color: var(--color-sage);
+    color: var(--color-moss-dark);
+}
+
+/* ==========================================================================
+   3. EN-TÊTES SPÉCIFIQUES PAGE PET-TYPE
+   ========================================================================== */
+
+.page-header {
+    margin-bottom: var(--space-lg);
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .page-header {
+        text-align: left;
+    }
+}
+
+.page-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-soil);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.page-header__subtitle {
+    font-size: 0.95rem;
+    color: var(--color-bark);
+    margin: 0;
+}
+
+/* En-tête de catégorie sélectionnée */
+.category-header {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--color-sand);
+}
+
+.category-header__title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-soil);
+    margin: 0 0 var(--space-xs) 0;
+}
+
+.category-header__count {
+    font-size: 0.9rem;
+    color: var(--color-bark);
+    margin: 0;
+}
+
+/* Section de sous-catégorie */
+.subcategory-section {
+    margin-bottom: var(--space-xl);
+}
+
+.subcategory-section__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-soil);
+    margin: 0 0 var(--space-md) 0;
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--color-sand);
+}
+
+/* ==========================================================================
+   4. GRILLE DE PRODUITS - Adaptation spécifique
+   ========================================================================== */
+
+/* Réutilise .products__grid de home.css mais avec des ajustements */
+.pet-type-layout__main .products-grid {
+    margin-top: var(--space-md);
+}
+
+/* ==========================================================================
+   5. CARTE PRODUIT - Extensions spécifiques
+   ========================================================================== */
+
+/* Réutilise .product-card de home.css */
+/* Ajouts spécifiques pour la page pet-type */
+
+/* Scoper avec .pet-type-page pour éviter de contaminer la page d'accueil */
+.pet-type-page .product-card__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pet-type-page .product-card__img-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* Ratio 1:1 */
+    background-color: var(--color-linen);
+    overflow: hidden;
+}
+
+.pet-type-page .product-card__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.pet-type-page .product-card:hover .product-card__img {
+    transform: scale(1.05);
+}
+
+.pet-type-page .product-card__placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.4;
+}
+
+.pet-type-page .product-card__cta {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-moss);
+    transition: transform var(--transition);
+}
+
+.pet-type-page .product-card__link:hover .product-card__cta {
+    transform: translateX(4px);
+}
+
+/* ==========================================================================
+   6. MESSAGE "AUCUN RÉSULTAT"
+   ========================================================================== */
+
+.no-results {
+    text-align: center;
+    padding: var(--space-xl) var(--space-sm);
+    background-color: var(--color-cream);
+    border-radius: var(--radius-md);
+    margin: var(--space-lg) 0;
+    border: 2px dashed var(--color-sand);
+}
+
+.no-results__icon {
+    font-size: 3.5rem;
+    margin-bottom: var(--space-sm);
+    opacity: 0.4;
+}
+
+.no-results__text {
+    font-size: 1.05rem;
+    color: var(--color-bark);
+    margin: 0 0 var(--space-md) 0;
+}
+
+/* ==========================================================================
+   7. BOUTON SECONDAIRE - Extension
+   ========================================================================== */
+
+/* home.css définit déjà .btn et .btn--secondary */
+/* Ajout d'une variante pour la page pet-type */
+.btn--outline {
+    background-color: transparent;
+    color: var(--color-moss);
+    border-color: var(--color-moss);
+}
+
+.btn--outline:hover {
+    background-color: var(--color-moss);
+    color: var(--color-white);
+}
+
+/* ==========================================================================
+   8. ACCESSIBILITÉ - Compléments
+   ========================================================================== */
+
+/* Focus visible pour les éléments de la sidebar */
+.category-sidebar__link:focus-visible {
+    outline: 3px solid var(--color-moss);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+.category-sidebar__toggle:focus-visible {
+    outline: 3px solid var(--color-moss);
+    outline-offset: 3px;
+}

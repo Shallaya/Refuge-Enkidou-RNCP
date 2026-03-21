@@ -1,0 +1,67 @@
+{# templates/partials/_navbar.html.twig #}
+<nav class="navbar">
+    <div class="navbar-container">
+        {# Logo #}
+        <a href="{{ path('home') }}" class="navbar-logo">
+            <img src="{{ asset('images/logo1.png') }}" alt="Le Refuge d'Enkidou" class="navbar-logo-img">Le Refuge d'Enkidou
+        </a>
+
+        {# Menu hamburger (mobile) #}
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        {# Menu principal #}
+        <ul class="navbar-menu" id="navbarMenu">
+            <li class="navbar-item">
+                <a href="{{ path('home') }}" class="navbar-link">Accueil</a>
+            </li>
+            
+            <li class="navbar-item dropdown">
+                <a href="#" class="navbar-link dropdown-toggle">
+                    Produits
+                    <span class="dropdown-icon">▼</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('app_pet_type_show', {slug: 'chien'}) }}" class="dropdown-link">Pour chiens</a></li>
+                    <li><a href="{{ path('app_pet_type_show', {slug: 'chat'}) }}" class="dropdown-link">Pour chats</a></li>
+                    {# <li><a href="{{ path('app_products') }}" class="dropdown-link">Tous les produits</a></li> #}
+                </ul>
+            </li>
+            
+            <li class="navbar-item">
+                {# <a href="{{ path('app_about') }}" class="navbar-link">À propos</a> #}
+                <a href="#" class="navbar-link">À propos</a>
+            </li>
+            
+            <li class="navbar-item">
+                {# <a href="{{ path('app_contact') }}" class="navbar-link">Contact</a> #}
+                <a href="#" class="navbar-link">Contact</a>
+            </li>
+            
+            {# Icônes panier et compte #}
+            <li class="navbar-item navbar-icons">
+                <a href="{{ path('app_cart_index') }}" class="navbar-link icon-link" title="Panier">
+                    🛒
+                    {% if app.session.get('cart_count', 0) > 0 %}
+                        <span class="cart-badge">{{ app.session.get('cart_count') }}</span>
+                    {% endif %}
+                </a>
+                
+                <a href="{{ path('app_login') }}" class="navbar-link icon-link" title="Mon compte">
+                    👤
+                </a>
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %} {# si l'utilisateur a le rôle admin, on affiche le lien vers l'admin #}
+                        <a href="{{ path('admin') }}" class="navbar-link">Admin</a>
+                    {% endif %}
+                    <a class="nav-link text-white" href="{{ path('app_logout') }}" title="Déconnexion">👤</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="navbar-link icon-link" title="Mon compte">👤</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -25,4 +25,8 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'navbar' => [
+        'path' => './assets/navbar.js',
+        'entrypoint' => true,
+    ]
 ];

@@ -1,0 +1,357 @@
+/* ========================================
+   VARIABLES CSS
+   ======================================== */
+:root {
+    --primary-color: #6B8E4E;
+    --secondary-color: #52b788;
+    --accent-color: #E2A85A;
+    --text-dark: #1b263b;             /* Texte principal */
+    --text-light: #ffffff;            /* Texte sur fond foncé */
+    --background-light: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --transition: 0.3s ease;
+}
+
+/* ========================================
+   RESET ET BASE
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   NAVBAR - MOBILE FIRST
+   ======================================== */
+.navbar {
+    background-color: var(--background-light);
+    box-shadow: 0 2px 8px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* ========================================
+   LOGO
+   ======================================== */
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color var(--transition);
+}
+
+.navbar-logo:hover {
+    color: var(--secondary-color);
+}
+
+.navbar-logo-img {
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
+/* ========================================
+   BOUTON HAMBURGER (MOBILE)
+   ======================================== */
+.navbar-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+    transition: all var(--transition);
+}
+
+/* Animation du hamburger en X */
+.navbar-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.navbar-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ========================================
+   MENU PRINCIPAL (MOBILE)
+   ======================================== */
+.navbar-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 200px;
+    height: 100vh;
+    background-color: var(--background-light);
+    list-style: none;
+    padding: 5rem 1.5rem 2rem;
+    box-shadow: -2px 0 10px var(--shadow);
+    transition: right var(--transition);
+    overflow-y: auto;
+}
+
+.navbar-menu.active {
+    right: 0;
+}
+
+.navbar-item {
+    margin-bottom: 1rem;
+}
+
+.navbar-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all var(--transition);
+}
+
+.navbar-link:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    transform: translateX(5px);
+}
+
+/* ========================================
+   DROPDOWN (MENU DÉROULANT)
+   ======================================== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-icon {
+    font-size: 0.75rem;
+    transition: transform var(--transition);
+}
+
+.dropdown.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    list-style: none;
+    padding-left: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height var(--transition), opacity var(--transition), visibility var(--transition);
+}
+
+.dropdown.active .dropdown-menu {
+    max-height: 300px;
+    margin-top: 0.5rem;
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-left: 2px solid var(--secondary-color);
+    margin-bottom: 0.25rem;
+    transition: all var(--transition);
+}
+
+.dropdown-link:hover {
+    background-color: rgba(82, 183, 136, 0.1);
+    padding-left: 1.5rem;
+}
+
+/* ========================================
+   ICÔNES (PANIER ET COMPTE)
+   ======================================== */
+.navbar-icons {
+    display: flex;
+    justify-content: center;
+    /* width: 100%; */
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 1rem;
+}
+
+.icon-link {
+    position: relative;
+    font-size: 1.5rem;
+    padding: 0.5rem !important;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.2rem 0.4rem;
+    border-radius: 50%;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ========================================
+   OVERLAY (FOND SOMBRE QUAND MENU OUVERT)
+   ======================================== */
+.navbar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition);
+    z-index: 999;
+}
+
+.navbar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================
+   RESPONSIVE - TABLETTE (768px et +)
+   ======================================== */
+@media (min-width: 768px) {
+    .navbar-container {
+        padding: 1rem 2rem;
+    }
+    
+    .navbar-toggle {
+        display: none;
+    }
+    
+    .navbar-menu {
+        position: static;
+        flex: 1;
+        max-width: none;
+        height: auto;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem;
+        overflow-y: visible;
+    }
+    
+    .navbar-item {
+        margin-bottom: 0;
+    }
+    
+    .navbar-link {
+        padding: 0.5rem 1rem;
+    }
+    
+    .navbar-link:hover {
+        transform: translateX(0);
+        transform: translateY(-2px);
+    }
+    
+    /* Dropdown en desktop */
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--background-light);
+        box-shadow: 0 4px 8px var(--shadow);
+        border-radius: 8px;
+        padding: 0.5rem 0;
+        min-width: 200px;
+        margin-top: 0.5rem;
+        padding-left: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition), visibility var(--transition);
+    }
+    
+    .dropdown:hover .dropdown-menu,
+    .dropdown.active .dropdown-menu {
+        max-height: 300px;
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .dropdown-link {
+        border-left: none;
+        border-radius: 0;
+    }
+    
+    .dropdown-link:hover {
+        background-color: var(--secondary-color);
+        color: var(--text-light);
+        padding-left: 1rem;
+    }
+    
+    .navbar-icons {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+    }
+}
+
+/* ========================================
+   RESPONSIVE - DESKTOP (1024px et +)
+   ======================================== */
+@media (min-width: 1024px) {
+    .navbar-container {
+        padding: 1.25rem 3rem;
+    }
+    
+    .navbar-logo {
+        font-size: 1.75rem;
+    }
+    
+    .navbar-menu {
+        gap: 1.5rem;
+    }
+    
+    .navbar-link {
+        font-size: 1.05rem;
+    }
+}

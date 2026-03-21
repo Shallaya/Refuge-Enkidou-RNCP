@@ -15,26 +15,41 @@ class ProductVariant
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100, unique: true)]
+    #[ORM\Column(length: 150, unique: true)]
     private ?string $sku = null;
 
     #[ORM\Column]
-    private ?int $stock = null;
+    private int $stock = 0;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2)]
     private ?string $price = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $material = '';
+    private ?string $material = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $color = '';
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $color = null;
+
+    // #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    // private ?string $weight = '';
+
+    // #[ORM\Column(length: 100, nullable: true)]
+    // private ?string $size = '';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    private ?string $weight = '';
+    private ?string $weightValue = null;
 
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $size = '';
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $weightUnit = null; // g, kg
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
+    private ?string $volumeValue = null;
+
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $volumeUnit = null; // ml, L
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $size = null; // S, M, L
 
     #[ORM\Column]
     private ?bool $isActive = null;
@@ -48,11 +63,10 @@ class ProductVariant
     // ======================
 
     #[ORM\PrePersist]
-    public function onPrePersist(): void
+    #[ORM\PreUpdate]
+    public function updateSku(): void
     {
-        if (!$this->sku) {
-            $this->generateSku();
-        }
+        $this->generateSku();
     }
 
     // ======================
@@ -76,7 +90,10 @@ class ProductVariant
         $product->getCode(),
         $this->material,
         $this->size,
-        $this->weight,
+        $this->weightValue,
+        $this->weightUnit,
+        $this->volumeValue,
+        $this->volumeUnit,
         $this->color
     ];
 
@@ -97,6 +114,10 @@ class ProductVariant
         return strtoupper($value);
     }
 
+    // ======================
+    // GETTERS & SETTERS
+    // ======================
+
     public function getId(): ?int
     {
         return $this->id;
@@ -114,7 +135,7 @@ class ProductVariant
 
     public function setStock(int $stock): static
     {
-        $this->stock = $stock;
+        $this->stock = max(0, $stock);
 
         return $this;
     }
@@ -155,14 +176,50 @@ class ProductVariant
         return $this;
     }
 
-    public function getWeight(): ?string
+    public function getWeightValue(): ?string
     {
-        return $this->weight;
+        return $this->weightValue;
     }
 
-    public function setWeight(?string $weight): static
+    public function setWeightValue(?string $weightValue): static
     {
-        $this->weight = $weight;
+        $this->weightValue = $weightValue;
+
+        return $this;
+    }
+
+    public function getWeightUnit(): ?string
+    {
+        return $this->weightUnit;
+    }
+
+    public function setWeightUnit(?string $weightUnit): static
+    {
+        $this->weightUnit = $weightUnit;
+
+        return $this;
+    }
+
+    public function getVolumeValue(): ?string
+    {
+        return $this->volumeValue;
+    }
+
+    public function setVolumeValue(?string $volumeValue): static
+    {
+        $this->volumeValue = $volumeValue;
+
+        return $this;
+    }
+
+    public function getVolumeUnit(): ?string
+    {
+        return $this->volumeUnit;
+    }
+
+    public function setVolumeUnit(?string $volumeUnit): static
+    {
+        $this->volumeUnit = $volumeUnit;
 
         return $this;
     }

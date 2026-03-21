@@ -1,20 +1,250 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Le Refuge d'Enkidou{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{# =============================================
+   HERO
+   Attendu depuis le contrôleur :
+     - heroTitle (string)
+     - heroSubtitle (string)
+   ============================================= #}
+<section class="hero" aria-label="Bannière principale">
+    <picture>
+        {# Image portrait pour mobile #}
+        <source
+            media="(max-width: 767px)"
+            srcset="{{ asset('images/hero_mobile.webp') }}"
+            type="image/webp">
+        <source
+            media="(max-width: 767px)"
+            srcset="{{ asset('images/hero_mobile.png') }}">
+        {# Image paysage pour desktop #}
+        <source
+            media="(min-width: 768px)"
+            srcset="{{ asset('images/hero_desktop.webp') }}"
+            type="image/webp">
+        <img
+            src="{{ asset('images/hero_desktop.png') }}"
+            alt="Chien et chat heureux entourés de produits naturels"
+            class="hero__img"
+            width="1536"
+            height="1024"
+            fetchpriority="high">
+    </picture>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/ssavidan/Documents/DWWM24/Dossier Projets/Refuge_Enkidou/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/ssavidan/Documents/DWWM24/Dossier Projets/Refuge_Enkidou/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="hero__overlay" aria-hidden="true"></div>
+
+    <span class="hero__badge">🌿 Zéro déchet &amp; écoresponsable</span>
+
+    <div class="hero__content">
+        
+        <h1 class="hero__title">{{ heroTitle ?? 'Des produits bons pour eux,<br>et pour la planète.' }}</h1>
+        <p class="hero__subtitle">{{ heroSubtitle ?? 'Sélection artisanale de produits naturels pour chiens et chats.' }}</p>
+        <div class="hero__actions">
+            <a href="{{ path('app_pet_type_show', { slug: 'chien' }) }}" class="btn btn--primary">🐕 Pour mon chien</a>
+            <a href="{{ path('app_pet_type_show', { slug: 'chat' }) }}" class="btn btn--secondary">🐈 Pour mon chat</a>
+        </div>
+    </div>
+</section>
+
+{# =============================================
+   SECTION VALEURS / ENGAGEMENTS
+   Statique — pas de données contrôleur
+   ============================================= #}
+<section class="values" aria-labelledby="values-title">
+    <div class="container">
+        <h2 class="section-title" id="values-title">Nos engagements</h2>
+        <div class="values__grid">
+            <div class="value-item">
+                <span class="value-item__icon" aria-hidden="true">♻️</span>
+                <h3 class="value-item__title">Zéro déchet</h3>
+                <p class="value-item__desc">Emballages compostables ou réutilisables, sans plastique superflu.</p>
+            </div>
+            <div class="value-item">
+                <span class="value-item__icon" aria-hidden="true">🌱</span>
+                <h3 class="value-item__title">Ingrédients naturels</h3>
+                <p class="value-item__desc">Formulations sans additifs chimiques, douces pour votre animal et l'environnement.</p>
+            </div>
+            <div class="value-item">
+                <span class="value-item__icon" aria-hidden="true">🤝</span>
+                <h3 class="value-item__title">Marques engagées</h3>
+                <p class="value-item__desc">Chaque produit est sélectionné auprès de fabricants responsables et transparents.</p>
+            </div>
+            <div class="value-item">
+                <span class="value-item__icon" aria-hidden="true">🚚</span>
+                <h3 class="value-item__title">Livraison neutre</h3>
+                <p class="value-item__desc">Expédition en colis éco-responsable, compensation carbone incluse.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{# =============================================
+   SECTION PET TYPES (Chien / Chat)
+   Attendu depuis le contrôleur :
+     - petTypes : Collection<PetType>
+   ============================================= #}
+<section class="pet-types" aria-labelledby="pet-types-title">
+    <div class="container">
+        <h2 class="section-title" id="pet-types-title">Pour quel compagnon ?</h2>
+        <div class="pet-types__grid">
+            {% for petType in petTypes %}
+            <a href="{{ path('app_pet_type_show', { slug: petType.slug }) }}" class="pet-card">
+                <div class="pet-card__icon">
+                    {% if petType.slug == 'chien' %}🐕{% elseif petType.slug == 'chat' %}🐈{% else %}🐾{% endif %}
+                </div>
+                <h3 class="pet-card__name">{{ petType.name }}</h3>
+                <span class="pet-card__count">
+                    {{ petType.products|length }} produit{{ petType.products|length > 1 ? 's' : '' }}
+                </span>
+                <span class="pet-card__link" aria-hidden="true">Voir la sélection →</span>
+            </a>
+            {% else %}
+            {# Fallback si pas encore de données #}
+            <a href="#" class="pet-card">
+                <div class="pet-card__icon">🐕</div>
+                <h3 class="pet-card__name">Chien</h3>
+                <span class="pet-card__link" aria-hidden="true">Voir la sélection →</span>
+            </a>
+            <a href="#" class="pet-card">
+                <div class="pet-card__icon">🐈</div>
+                <h3 class="pet-card__name">Chat</h3>
+                <span class="pet-card__link" aria-hidden="true">Voir la sélection →</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# =============================================
+   SECTION CATÉGORIES PARENTES
+   Attendu depuis le contrôleur :
+     - featuredCategories : Category[] (sans parent, avec children)
+   ============================================= #}
+<section class="categories" aria-labelledby="categories-title">
+    <div class="container">
+        <h2 class="section-title" id="categories-title">Nos univers</h2>
+        <p class="section-subtitle">Des solutions naturelles pour chaque besoin de votre animal</p>
+
+        <div class="categories__grid">
+            {% for category in featuredCategories %}
+            <article class="category-card">
+                <a href="{{ path('app_pet_type_show', { slug: category.petType.slug, category: category.slug }) }}" class="category-card__link">
+                    <div class="category-card__body">
+                        <div class="category-card__header">
+                            <span class="category-card__badge">{{ category.petType ? category.petType.name : 'Tous' }}</span>
+                            <h3 class="category-card__name">{{ category.name }}</h3>
+                        </div>
+
+                        {% if category.children|length > 0 %}
+                        <ul class="category-card__sub" aria-label="Sous-catégories de {{ category.name }}">
+                            {% for child in category.children|slice(0, 4) %}
+                            <li>{{ child.name }}</li>
+                            {% endfor %}
+                            {% if category.children|length > 4 %}
+                            <li class="more">+{{ category.children|length - 4 }} autres</li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+
+                        <span class="category-card__cta">Explorer →</span>
+                    </div>
+                </a>
+            </article>
+            {% else %}
+            {# Fallback #}
+            {% for label in ['Alimentation', 'Hygiène', 'Jouets', 'Accessoires'] %}
+            <article class="category-card">
+                <div class="category-card__body">
+                    <div class="category-card__header">
+                        <h3 class="category-card__name">{{ label }}</h3>
+                    </div>
+                    <span class="category-card__cta">Explorer →</span>
+                </div>
+            </article>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# =============================================
+   SECTION PRODUITS VEDETTES
+   Attendu depuis le contrôleur :
+     - featuredProducts : Product[] (4 à 8 produits)
+   ============================================= #}
+<section class="featured-products" aria-labelledby="featured-title">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" id="featured-title">Nos coups de cœur</h2>
+            <a href="{{ path('app_product_list') }}" class="see-all">Tout voir →</a>
+        </div>
+
+        <div class="products__grid">
+            {% for variant in featuredVariants %}
+                {% set product = variant.product %}
+                <article class="product-card">
+                    <a href="{{ path('app_product_show', { slug: product.slug }) }}" class="product-card__img-link" tabindex="-1" aria-hidden="true">
+                        {% if product.image %}
+                            <img
+                                src="{{ asset('images/products/' ~ product.image) }}"
+                                alt="{{ product.name }}"
+                                class="product-card__img"
+                                loading="lazy"
+                                width="400"
+                                height="400">
+                        {% else %}
+                            <div class="product-card__img product-card__img--placeholder" aria-label="Image non disponible">
+                                🌿
+                            </div>
+                        {% endif %}
+                    </a>
+                    <div class="product-card__body">
+                        {% if product.category %}
+                            <span class="product-card__category">{{ product.category.name }}</span>
+                        {% endif %}
+                        <h3 class="product-card__name">
+                            <a href="{{ path('app_product_show', { slug: product.slug }) }}">
+                                {{ product.name }}
+                                {# Afficher les détails de la variante #}
+                                {% if variant.size %} - {{ variant.size }}{% endif %}
+                                {% if variant.weightValue %} - {{ variant.weightValue }}{{ variant.weightUnit }}{% endif %}
+                                {% if variant.volumeValue %} - {{ variant.volumeValue }}{{ variant.volumeUnit }}{% endif %}
+                            </a>
+                        </h3>
+                        <div class="product-card__footer">
+                            <span class="product-card__price">{{ variant.price|number_format(2, ',', ' ') }} €</span>
+                            <button class="btn btn--cart" aria-label="Ajouter {{ product.name }} au panier">
+                                Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{# =============================================
+   BANNIÈRE CTA FINALE
+   ============================================= #}
+<section class="cta-banner" aria-labelledby="cta-title">
+    <div class="container">
+        <div class="cta-banner__content">
+            <h2 class="cta-banner__title" id="cta-title">Prêt à changer vos habitudes ?</h2>
+            <p class="cta-banner__text">Rejoignez des milliers de propriétaires qui ont choisi le naturel pour leurs compagnons.</p>
+            <a href="{{ path('app_product_list') }}" class="btn btn--primary btn--large">Découvrir tous les produits</a>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

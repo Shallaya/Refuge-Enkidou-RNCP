@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} - Le Refuge d'Enkidou{% endblock %}
+
+{# {% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pet-type.css') }}">
+{% endblock %} #}
+
+{% block body %}
+<div class="container product-detail">
+    {# Fil d'Ariane #}
+    <nav aria-label="Fil d'Ariane" class="breadcrumb">
+        <a href="{{ path('home') }}">Accueil</a> /
+        <a href="{{ path('app_pet_type_show', {slug: product.petType.slug}) }}">
+            {{ product.petType.name }}
+        </a> /
+        {% if product.category %}
+        <a href="{{ path('app_pet_type_show', {slug: product.petType.slug, category: product.category.slug}) }}">
+            {{ product.category.name }}
+        </a> /
+        {% endif %}
+        <span>{{ product.name }}</span>
+    </nav>
+    
+    <div class="product-layout">
+        {# Colonne gauche : Image #}
+        <div class="product-gallery">
+            {% if product.image %}
+                <img src="{{ asset('images/products/' ~ product.image) }}" 
+                     alt="{{ product.name }}" 
+                     class="product-img">
+            {% else %}
+                {# <div class="product-img product-img--placeholder">🌿</div> #}
+                <img src="{{ asset('images/test.png') }}" 
+                     alt="{{ product.name }}" 
+                     class="product-img">
+            {% endif %}
+        </div>
+        
+        {# Colonne droite : Infos #}
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            
+            <p class="product-short-desc">{{ product.shortDescription }}</p>
+            
+            {# Sélection des variantes #}
+            {% if variants|length > 0 %}
+                {# <form method="post" action="{{ path('app_cart_add') }}" class="product-form"> #} {# À adapter selon la route d'ajout au panier #}
+                {# Calculer s'il y a du stock sur au moins une variante #}
+                {% set hasStock = false %}
+                {% for variant in variants %}
+                    {% if variant.stock > 0 %}
+                        {% set hasStock = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <form method="post" action="{{ path('app_cart_add', {id: product.id}) }}" class="product-form">
+                    <div class="variant-selector">
+                        <label for="variant">Choisissez une option :</label>
+                        <select name="variant_id" id="variant" required>
+                            {% for variant in variants %}
+                                <option value="{{ variant.id }}" {% if variant.stock == 0 %}disabled{% endif %}>
+                                    {% if variant.size %}{{ variant.size }}{% endif %}
+                                    {% if variant.weightValue %}{{ variant.size ? ' - ' }}{{ variant.weightValue }}{{ variant.weightUnit }}{% endif %}
+                                    {% if variant.volumeValue %}{{ (variant.size or variant.weightValue) ? ' - ' }}{{ variant.volumeValue }}{{ variant.volumeUnit }}{% endif %}
+                                    {% if variant.color %}{{ (variant.size or variant.weightValue or variant.volumeValue) ? ' - ' }}{{ variant.color }}{% endif %}
+                                    - {{ variant.price|number_format(2, ',', ' ') }} €
+                                    {% if variant.stock == 0 %}
+                                        (Rupture)
+                                    {% elseif variant.stock < 5 %}
+                                        ({{ variant.stock }} en stock)
+                                    {% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100"
+                            {% if not hasStock %}disabled{% endif %}>
+                        Ajouter au panier
+                    </button>
+                </form>
+            {% else %}
+                <p>Aucune variante disponible.</p>
+            {% endif %}
+            
+            {# Description complète #}
+            {% if product.description %}
+            <div class="product-description">
+                <h2>Description</h2>
+                {{ product.description|nl2br }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

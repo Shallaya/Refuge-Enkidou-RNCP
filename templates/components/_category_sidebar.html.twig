@@ -1,0 +1,161 @@
+{# 
+  Composant : Menu de navigation des catégories
+  Usage : {% include 'pet_type/_category_sidebar.html.twig' %}
+  
+  Variables attendues :
+  - petType : l'entité PetType courante
+  - categories : collection des catégories
+  - selectedCategorySlug : slug de la catégorie active (null si "Tous les produits")
+#}
+
+<aside class="category-sidebar" role="navigation" aria-label="Filtrer par catégorie">
+    {# Bouton Mobile pour ouvrir/fermer le menu #}
+    <button class="category-sidebar__toggle" 
+            aria-expanded="false" 
+            aria-controls="category-menu"
+            type="button">
+        <span class="category-sidebar__toggle-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M2 4h16M2 10h16M2 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </span>
+        <span class="category-sidebar__toggle-text">Catégories</span>
+        <span class="category-sidebar__toggle-arrow" aria-hidden="true">▼</span>
+    </button>
+
+    {# Menu des catégories #}
+    <nav id="category-menu" class="category-sidebar__menu" aria-label="Catégories de produits">
+        <h2 class="category-sidebar__title">Filtrer par catégorie</h2>
+        
+        <ul class="category-sidebar__list">
+            {# Lien "Tous les produits" #}
+            <li class="category-sidebar__item">
+                <a href="{{ path('app_pet_type_show', {slug: petType.slug}) }}" 
+                   class="category-sidebar__link {% if not selectedCategorySlug %}category-sidebar__link--active{% endif %}"
+                   {% if not selectedCategorySlug %}aria-current="page"{% endif %}>
+                    <span class="category-sidebar__icon">🐾</span>
+                    <span class="category-sidebar__name">Tous les produits</span>
+                    <span class="category-sidebar__count">{{ petType.products|length }}</span>
+                </a>
+            </li>
+
+            {# Liste des catégories parentes avec leurs enfants #}
+            {% set parentCategories = [] %}
+            {% for category in categories %}
+                {% if category.parent is null %}
+                    {% set parentCategories = parentCategories|merge([category]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% for parentCategory in parentCategories %}
+                <li class="category-sidebar__item category-sidebar__item--parent">
+                    <a href="{{ path('app_pet_type_show', {slug: petType.slug, category: parentCategory.slug}) }}" 
+                       class="category-sidebar__link {% if selectedCategorySlug == parentCategory.slug %}category-sidebar__link--active{% endif %}"
+                       {% if selectedCategorySlug == parentCategory.slug %}aria-current="page"{% endif %}>
+                        <span class="category-sidebar__icon">{{ _self.getCategoryIcon(parentCategory.name) }}</span>
+                        <span class="category-sidebar__name">{{ parentCategory.name }}</span>
+                        <span class="category-sidebar__count">{{ parentCategory.products|length }}</span>
+                    </a>
+
+                    {# Sous-catégories (enfants) #}
+                    {% if parentCategory.children|length > 0 %}
+                        <ul class="category-sidebar__sublist">
+                            {% for childCategory in parentCategory.children %}
+                                <li class="category-sidebar__item category-sidebar__item--child">
+                                    <a href="{{ path('app_pet_type_show', {slug: petType.slug, category: childCategory.slug}) }}" 
+                                       class="category-sidebar__link {% if selectedCategorySlug == childCategory.slug %}category-sidebar__link--active{% endif %}"
+                                       {% if selectedCategorySlug == childCategory.slug %}aria-current="page"{% endif %}>
+                                        <span class="category-sidebar__name">{{ childCategory.name }}</span>
+                                        <span class="category-sidebar__count">{{ childCategory.products|length }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</aside>
+
+{# Macro pour attribuer des icônes selon le nom de la catégorie #}
+{% macro getCategoryIcon(categoryName) %}
+    {% set name = categoryName|lower %}
+    {% if 'alimentation' in name or 'nourriture' in name %}🍖
+    {% elseif 'jouet' in name %}🎾
+    {% elseif 'accessoire' in name or 'équipement' in name %}🎒
+    {% elseif 'hygiène' in name or 'soin' in name %}🧼
+    {% elseif 'couchage' in name or 'confort' in name %}🛏️
+    {% elseif 'transport' in name %}🚗
+    {% elseif 'vêtement' in name %}👕
+    {% else %}📦
+    {% endif %}
+{% endmacro %}
+
+{# Script JavaScript pour le toggle mobile (inline pour éviter fichier externe) #}
+<script>
+(function() {
+    'use strict';
+    
+    // Fonction d'initialisation
+    function initCategorySidebar() {
+        const toggle = document.querySelector('.category-sidebar__toggle');
+        const menu = document.querySelector('.category-sidebar__menu');
+        
+        console.log('🔧 Init sidebar - Toggle:', toggle, 'Menu:', menu);
+        
+        if (!toggle || !menu) {
+            console.warn('⚠️ Éléments sidebar non trouvés');
+            return;
+        }
+        
+        // Supprimer les anciens listeners pour éviter les doublons
+        const newToggle = toggle.cloneNode(true);
+        toggle.parentNode.replaceChild(newToggle, toggle);
+        
+        // Ajouter le nouveau listener sur le nouveau bouton
+        newToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🖱️ Clic détecté');
+            
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            console.log('État avant:', isExpanded ? 'ouvert' : 'fermé');
+            
+            // Toggle l'état
+            this.setAttribute('aria-expanded', !isExpanded);
+            this.classList.toggle('category-sidebar__toggle--open');
+            menu.classList.toggle('category-sidebar__menu--open');
+            
+            console.log('État après:', !isExpanded ? 'ouvert' : 'fermé');
+            console.log('Classes menu:', menu.className);
+        });
+
+        // Fermer le menu si on clique sur un lien (mobile)
+        const links = menu.querySelectorAll('.category-sidebar__link');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 768) {
+                    console.log('🔗 Lien cliqué, fermeture menu');
+                    newToggle.setAttribute('aria-expanded', 'false');
+                    newToggle.classList.remove('category-sidebar__toggle--open');
+                    menu.classList.remove('category-sidebar__menu--open');
+                }
+            });
+        });
+        
+        console.log('✅ Sidebar initialisée avec succès');
+    }
+    
+    // Initialiser immédiatement si le DOM est déjà chargé
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCategorySidebar);
+    } else {
+        // DOM déjà chargé (cas de navigation turbo/ajax)
+        initCategorySidebar();
+    }
+    
+    // Ré-initialiser après chaque chargement de page (pour Turbo/AJAX)
+    window.addEventListener('load', initCategorySidebar);
+    
+})();
+</script>
