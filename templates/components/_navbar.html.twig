@@ -50,14 +50,11 @@
                     {% endif %}
                 </a>
                 
-                <a href="{{ path('app_login') }}" class="navbar-link icon-link" title="Mon compte">
-                    👤
-                </a>
                 {% if app.user %}
                     {% if is_granted('ROLE_ADMIN') %} {# si l'utilisateur a le rôle admin, on affiche le lien vers l'admin #}
                         <a href="{{ path('admin') }}" class="navbar-link">Admin</a>
                     {% endif %}
-                    <a class="nav-link text-white" href="{{ path('app_logout') }}" title="Déconnexion">👤</a>
+                    <a href="{{ path('app_logout') }}" class="navbar-link icon-link" title="Déconnexion">👤</a>
                 {% else %}
                     <a href="{{ path('app_login') }}" class="navbar-link icon-link" title="Mon compte">👤</a>
                 {% endif %}

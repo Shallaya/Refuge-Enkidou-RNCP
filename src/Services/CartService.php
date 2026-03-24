@@ -21,12 +21,19 @@ class CartService
      */
     public function addItem(ProductVariant $variant): void
     {
-        $cart = $this->getCart();
-        $variantId = $variant->getId();
-        // Vérifier que le produit existe et qu'il y a du stock
-        if (!$variant || $variant->getStock() <= 0) {
+        
+        // Vérifier le stock
+        if ($variant->getStock() <= 0) {
             return;
         }
+
+        $variantId = $variant->getId();
+
+        if ($variantId === null) {
+            throw new \LogicException('Variant sans ID');
+        }
+
+        $cart = $this->getCart();
 
         if (isset($cart[$variantId])) {
             $cart[$variantId]->setQuantity(
@@ -35,12 +42,14 @@ class CartService
         } else {
             $cart[$variantId] = new CartItem(
                 $variantId,
-                (string) $variant->getProduct()->getName(),
-                (int) ($variant->getPrice() * 100)
+                $variant->getProduct()->getName(),
+                (int) ((float) $variant->getPrice() * 100) // conversion propre
             );
         }
+
         $this->save($cart);
     }
+    
 
     /**
      * @return \App\Model\CartItem[]|array<int, \App\Model\CartItem>

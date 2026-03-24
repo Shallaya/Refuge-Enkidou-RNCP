@@ -47,17 +47,18 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('mailer@your-domain.com', 'Le Refuge d\'Enkidou'))
+                    ->from(new Address('noreply@example.com', 'Le Refuge d\'Enkidou'))
                     ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Confirme ton email pour Le Refuge d\'Enkidou')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
             // faites tout ce dont vous avez besoin ici, comme envoyer un e-mail, puis redirigez l'utilisateur vers une autre page
 
-            // Connexion automatique apres inscription
-            return $security->login($user, 'form_login', 'main');
-        }
+            // ❌ Ne pas connecter l’utilisateur automatiquement
+            $this->addFlash('success', 'Inscription réussie ! Un email de confirmation vous a été envoyé.');
+            return $this->redirectToRoute('app_login');
+            }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
@@ -65,24 +66,59 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
+    public function verifyUserEmail(Request $request, EntityManagerInterface $em): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $id = $request->get('id');
 
-        // valider le lien de confirmation par e-mail, définit User::isVerified=true et persiste
-        try {
-            /** @var User $user */
-            $user = $this->getUser();
-            $this->emailVerifier->handleEmailConfirmation($request, $user);
-        } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
-
-            return $this->redirectToRoute('app_register');
+        if (!$id) {
+            $this->addFlash('error', 'Lien invalide');
+            return $this->redirectToRoute('home');
         }
 
-        // @TODO Modifiez la redirection en cas de succès et gérez ou supprimez le message flash dans vos modèles
-        $this->addFlash('success', 'Votre adresse e-mail a bien été vérifiée.');
+        $user = $em->getRepository(User::class)->find($id);
 
-        return $this->redirectToRoute('app_register');
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable');
+            return $this->redirectToRoute('home');
+        }
+
+        try {
+            $this->emailVerifier->handleEmailConfirmation($request, $user);
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('error', 'Lien expiré ou invalide');
+            return $this->redirectToRoute('home');
+        }
+
+        $this->addFlash('success', 'Votre adresse e-mail a bien été vérifiée. Vous pouvez maintenant vous connecter.');
+
+        return $this->redirectToRoute('home');
+    }
+
+    #[Route('/resend-verification', name: 'app_resend_verification')]
+    public function resendVerification(): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        /** @var User $user */
+        if ($user->isVerified()) {
+            $this->addFlash('success', 'Email déjà vérifié');
+            return $this->redirectToRoute('home');
+        }
+
+        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            (new TemplatedEmail())
+                ->from(new Address('noreply@example.com', 'Le Refuge d\'Enkidou'))
+                ->to((string) $user->getEmail())
+                ->subject('Confirme ton email pour Le Refuge d\'Enkidou')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+
+        $this->addFlash('success', 'Email renvoyé !');
+
+        return $this->redirectToRoute('home');
     }
 }

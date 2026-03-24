@@ -16,8 +16,8 @@ class Product
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $name;
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
@@ -84,8 +84,11 @@ class Product
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
+        if ($this->name === '') {
+            throw new \LogicException('Le produit doit avoir un nom');
+        }
         return $this->name;
     }
 
@@ -284,12 +287,7 @@ class Product
 
     public function removeProductVariant(ProductVariant $productVariant): static
     {
-        if ($this->productVariants->removeElement($productVariant)) {
-            // set the owning side to null (unless already changed)
-            if ($productVariant->getProduct() === $this) {
-                $productVariant->setProduct(null);
-            }
-        }
+        $this->productVariants->removeElement($productVariant);
 
         return $this;
     }

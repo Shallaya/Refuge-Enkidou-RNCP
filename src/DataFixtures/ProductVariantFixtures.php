@@ -10,9 +10,20 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class ProductVariantFixtures extends Fixture implements DependentFixtureInterface
 {
+    private const FIELD_MAP = [
+        'material' => 'setMaterial',
+        'size' => 'setSize',
+        'weightValue' => 'setWeightValue',
+        'weightUnit' => 'setWeightUnit',
+        'volumeValue' => 'setVolumeValue',
+        'volumeUnit' => 'setVolumeUnit',
+        'color' => 'setColor',
+    ];
+
     public function load(ObjectManager $manager): void
     {
         $productRepo = $manager->getRepository(Product::class);
+        $variantRepo = $manager->getRepository(ProductVariant::class);
 
         $variants = [
 
@@ -91,39 +102,34 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'name' => $data['productName']
             ]);
 
-            $variant = new ProductVariant();
-            $variant
+            // construire des critères dynamiquement pour vérifier l'existence de la variante
+            $criteria = ['product' => $product];
+            
+            foreach (self::FIELD_MAP as $field => $setter) {
+                if (isset($data[$field])) {
+                    $criteria[$field] = $data[$field];
+                }
+            }
+
+            if ($variantRepo->findOneBy($criteria)) {
+                continue; // Skip cette variante, elle existe déjà
+            }
+
+            if ($product === null) {
+                throw new \LogicException('Le produit doit être défini avant de créer un variant');
+            }
+
+            $variant = (new ProductVariant())
                 ->setProduct($product)
                 ->setStock($data['stock'])
                 ->setPrice($data['price'])
                 ->setIsActive(true);
 
-            if (isset($data['material'])) {
-                $variant->setMaterial($data['material']);
-            }
-
-            if (isset($data['size'])) {
-                $variant->setSize($data['size']);
-            }
-
-            if (isset($data['weightValue'])) {
-                $variant->setWeightValue($data['weightValue']);
-            }
-
-            if (isset($data['weightUnit'])) {
-                $variant->setWeightUnit($data['weightUnit']);
-            }
-
-            if (isset($data['volumeValue'])) {
-                $variant->setVolumeValue($data['volumeValue']);
-            }
-
-            if (isset($data['volumeUnit'])) {
-                $variant->setVolumeUnit($data['volumeUnit']);
-            }
-
-            if (isset($data['color'])) {
-                $variant->setColor($data['color']);
+            // setters dynamiques
+            foreach (self::FIELD_MAP as $field => $setter) {
+                if (isset($data[$field])) {
+                    $variant->$setter($data[$field]);
+                }
             }     
 
             $manager->persist($variant);

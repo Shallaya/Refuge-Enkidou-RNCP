@@ -21,8 +21,8 @@ class ProductVariant
     #[ORM\Column]
     private int $stock = 0;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2)]
-    private ?string $price = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 2, nullable: false)]
+    private string $price;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $material = null;
@@ -56,7 +56,7 @@ class ProductVariant
 
     #[ORM\ManyToOne(inversedBy: 'productVariants')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
+    private Product $product;
 
     // ======================
     // LIFECYCLE
@@ -74,37 +74,34 @@ class ProductVariant
     // ======================
 
     private function generateSku(): void
-{
-    $product = $this->getProduct();
-    if (!$product) {
-        throw new \LogicException('Le produit doit être défini avant de générer le SKU');
-    }
+    {
+        $product = $this->getProduct();
+        
+        $parts = [];
 
-    $parts = [];
+        // On ajoute toujours le préfixe + ID
+        $parts[] = 'PRD-' . $product->getId();
 
-    // On ajoute toujours le préfixe + ID
-    $parts[] = 'PRD-' . $product->getId();
+        // Liste des champs à inclure dans le SKU
+        $fields = [
+            $product->getCode(),
+            $this->material,
+            $this->size,
+            $this->weightValue,
+            $this->weightUnit,
+            $this->volumeValue,
+            $this->volumeUnit,
+            $this->color
+        ];
 
-    // Liste des champs à inclure dans le SKU
-    $fields = [
-        $product->getCode(),
-        $this->material,
-        $this->size,
-        $this->weightValue,
-        $this->weightUnit,
-        $this->volumeValue,
-        $this->volumeUnit,
-        $this->color
-    ];
-
-    foreach ($fields as $field) {
-        if ($field !== null && $field !== '') {
-            $parts[] = $this->sanitize((string) $field);
+        foreach ($fields as $field) {
+            if ($field !== null && $field !== '') {
+                $parts[] = $this->sanitize((string) $field);
+            }
         }
-    }
 
-    $this->sku = implode('-', $parts);
-}
+        $this->sku = implode('-', $parts);
+    }
 
     private function sanitize(string $value): string
     {
@@ -248,12 +245,12 @@ class ProductVariant
         return $this;
     }
 
-    public function getProduct(): ?Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): static
+    public function setProduct(Product $product): static
     {
         $this->product = $product;
 

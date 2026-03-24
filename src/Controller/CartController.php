@@ -18,6 +18,9 @@ final class CartController extends AbstractController
     #[Route('/cart', name: 'app_cart_index')]
     public function index(): Response
     {
+        if ($response = $this->denyIfNotVerified()) {
+            return $response;
+        }
 
         return $this->render('cart/index.html.twig', [
             'items' => $this->cartService->getCart(),
@@ -28,6 +31,10 @@ final class CartController extends AbstractController
     #[Route('/cart/add/{id}', name: 'app_cart_add', methods: ['POST'])]
     public function add(int $id, Request $request, ProductVariantRepository $variantRepo): Response
     {
+        if ($response = $this->denyIfNotVerified()) {
+            return $response;
+        }
+
         $variantId = $request->request->get('variant_id');
         if (!$variantId) {
             if ($request->isXmlHttpRequest()) {
@@ -53,6 +60,10 @@ final class CartController extends AbstractController
     #[Route('/cart/remove/{id}', name: 'app_cart_remove', methods: ['POST'])]
     public function remove(int $id, Request $request): Response
     {
+        if ($response = $this->denyIfNotVerified()) {
+            return $response;
+        }
+
         $this->cartService->removeItem($id);
         $this->updateCartSession($request);
         $this->addFlash('info', 'Produit retiré du panier.');
@@ -62,6 +73,10 @@ final class CartController extends AbstractController
     #[Route('/cart/clear', name: 'app_cart_clear', methods: ['POST'])]
     public function clear(Request $request): Response
     {
+        if ($response = $this->denyIfNotVerified()) {
+            return $response;
+        }
+        
         $this->cartService->clear();
         $this->updateCartSession($request);
         $this->addFlash('warning', 'Panier vidé.');
@@ -78,5 +93,18 @@ final class CartController extends AbstractController
     {
         $referer = $request->headers->get('referer');
         return $referer ? $this->redirect($referer) : $this->redirectToRoute('home');
+    }
+
+    private function denyIfNotVerified(): ?Response
+    {
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+
+        if (!$user?->isVerified()) {
+            $this->addFlash('error', 'Veuillez vérifier votre email');
+            return $this->redirectToRoute('home');
+        }
+
+        return null;
     }
 }
