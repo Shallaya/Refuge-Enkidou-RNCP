@@ -45,8 +45,9 @@
             <li class="navbar-item navbar-icons">
                 <a href="{{ path('app_cart_index') }}" class="navbar-link icon-link" title="Panier">
                     🛒
-                    {% if app.session.get('cart_count', 0) > 0 %}
-                        <span class="cart-badge">{{ app.session.get('cart_count') }}</span>
+                    {% set count = cart_count() %}
+                    {% if count > 0 %}
+                        <span class="cart-badge">{{ count }}</span>
                     {% endif %}
                 </a>
                 

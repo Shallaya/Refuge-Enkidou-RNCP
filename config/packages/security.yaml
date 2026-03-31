@@ -29,6 +29,7 @@ security:
                 # where to redirect after logout
                 target: home
             user_checker: App\Security\UserChecker
+            access_denied_handler: App\Security\AccessDeniedHandler
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -50,6 +51,7 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/verify, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

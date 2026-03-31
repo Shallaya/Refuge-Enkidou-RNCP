@@ -91,7 +91,7 @@ class CartService
     {
         $total = 0;
         foreach ($this->getCart() as $item) {
-            $total += $item->getTotal();
+            $total += $item->getTotal(); // conversion propre
         }
         return $total;
     }

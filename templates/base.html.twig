@@ -19,6 +19,19 @@
     </head>
     <body>
         {% include "components/_navbar.html.twig" %}
+
+        {# affichage des messages flash #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-message flash-{{ label }}" style="padding: 15px; margin: 10px 0; border-radius: 4px; 
+                    background-color: {{ label == 'success' ? '#d4edda' : (label == 'error' ? '#f8d7da' : '#d1ecf1') }};
+                    color: {{ label == 'success' ? '#155724' : (label == 'error' ? '#721c24' : '#0c5460') }};
+                    border: 1px solid {{ label == 'success' ? '#c3e6cb' : (label == 'error' ? '#f5c6cb' : '#bee5eb') }};">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         {% block body %}{% endblock %}
         {% include "components/_footer.html.twig" %}
     </body>

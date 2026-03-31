@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Mes commandes</h1>
+
+    {% if orders is empty %}
+        <div class="alert alert-info">
+            <p class="mb-0">Vous n'avez pas encore de commandes.</p>
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Référence</th>
+                        <th>Date</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td><strong>{{ order.reference }}</strong></td>
+                            <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                            <td>{{ (order.totalAmount / 100)|number_format(2, ',', ' ') }} €</td>
+                            <td>
+                                {% if order.status == 'paid' %}
+                                    <span class="badge bg-success">Payée</span>
+                                {% elseif order.status == 'pending' %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% elseif order.status == 'shipped' %}
+                                    <span class="badge bg-info">Expédiée</span>
+                                {% elseif order.status == 'delivered' %}
+                                    <span class="badge bg-primary">Livrée</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Annulée</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_order_show', {reference: order.reference}) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> Détails
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

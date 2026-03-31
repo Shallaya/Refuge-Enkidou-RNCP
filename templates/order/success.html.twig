@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande confirmée{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h1 class="mb-3">Merci pour votre commande !</h1>
+                    <p class="lead">Votre commande a été confirmée avec succès.</p>
+                    
+                    <div class="alert alert-info my-4">
+                        <strong>Numéro de commande :</strong> {{ order.reference }}
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        Un email de confirmation a été envoyé à {{ order.user.email }}
+                    </p>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ path('app_order_show', {reference: order.reference}) }}" class="btn btn-primary">
+                            <i class="fas fa-eye me-2"></i>
+                            Voir ma commande
+                        </a>
+                        <a href="{{ path('app_order_list') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>
+                            Mes commandes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

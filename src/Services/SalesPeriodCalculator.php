@@ -9,10 +9,11 @@ class SalesPeriodCalculator
      */
     public function getWinterSales(int $year): array
     {
+        // Trouve le mercredi le plus récent à la date actuelle ou avant.
         $date = new \DateTimeImmutable("$year-01-01");
         $wednesdays = [];
         while ($date->format('m') === '01') {
-            if ($date->format('N') == 3) $wednesdays[] = $date;
+            if ($date->format('N') == 3) $wednesdays[] = $date; // N = 1 (Monday) to 7 (Sunday)
             $date = $date->modify('+1 day');
         }
 

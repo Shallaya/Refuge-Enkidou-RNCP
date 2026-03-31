@@ -56,17 +56,10 @@
 			</tfoot>
 		</table>
 
-		{# <div class="d-flex justify-content-between mt-3">
-			<form method="post" action="{{ path('app_order_checkout') }}">
-				<input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
-				<button type="submit" class="btn btn-success btn-lg">
-					💳 Payer
-					{{ (total / 100)|number_format(2, ',', ' ') }}
-					€
-				</button>
-			</form>
-
-		</div> #}
-
+		<a href="{{ path('app_order_checkout') }}" class="btn btn-success btn-lg">
+			<i class="fas fa-lock me-2"></i>
+			💳 Procéder au paiement
+		</a>
+		
 	{% endif %}
 {% endblock %}
