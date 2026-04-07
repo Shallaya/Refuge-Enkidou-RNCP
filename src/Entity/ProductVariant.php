@@ -15,6 +15,9 @@ class ProductVariant
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $variantName;
+
     #[ORM\Column(length: 150, unique: true)]
     private ?string $sku = null;
 
@@ -29,12 +32,6 @@ class ProductVariant
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $color = null;
-
-    // #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    // private ?string $weight = '';
-
-    // #[ORM\Column(length: 100, nullable: true)]
-    // private ?string $size = '';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $weightValue = null;
@@ -118,6 +115,18 @@ class ProductVariant
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getVariantName(): string
+    {
+        return $this->variantName;
+    }
+
+    public function setVariantName(string $variantName): static
+    {
+        $this->variantName = $variantName;
+
+        return $this;
     }
 
     public function getSku(): ?string

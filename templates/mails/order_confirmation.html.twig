@@ -1,3 +1,7 @@
+{% extends 'mails/base.html.twig' %}
+
+{% block content %}
+
 <h1>Merci pour votre commande !</h1>
 
 <p>Bonjour {{ order.user.email }},</p>
@@ -14,3 +18,5 @@
 <p><strong>Total : {{ (order.totalAmount / 100) }} €</strong></p>
 
 <p>Merci de votre confiance !</p>
+
+{% endblock %}

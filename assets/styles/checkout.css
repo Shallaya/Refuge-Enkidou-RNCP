@@ -1,0 +1,349 @@
+/* ──────────────────────────────────────────
+   PAGE CHECKOUT
+────────────────────────────────────────── */
+.page-checkout {
+    background-color: var(--color-linen);
+    padding: var(--space-lg) 0 var(--space-xl);
+    min-height: 100vh;
+}
+
+.page-checkout .container {
+    max-width: var(--max-width, 1200px);
+    margin: 0 auto;
+    padding: 0 var(--space-sm);
+}
+
+.page-checkout h1 {
+    font-family: var(--font-display, "Playfair Display", serif);
+    color: var(--color-soil);
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-bottom: var(--space-lg);
+}
+
+
+/* ──────────────────────────────────────────
+   LAYOUT GRID
+────────────────────────────────────────── */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+
+/* ──────────────────────────────────────────
+   CARDS
+────────────────────────────────────────── */
+.checkout-card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-sand);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(59, 47, 47, 0.08);
+}
+
+.checkout-card__header {
+    background-color: var(--color-bark);
+    border-bottom: 1px solid var(--color-sand);
+    padding: var(--space-md);
+}
+
+.checkout-card__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--color-cream);
+    margin: 0;
+}
+
+.checkout-card__body {
+    padding: var(--space-md);
+}
+
+
+/* ──────────────────────────────────────────
+   FORMULAIRE
+────────────────────────────────────────── */
+/* .checkout-form {
+    Le form lui-même n'a pas de style spécial
+} */
+
+/* Groupes de champs */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-soil);
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid var(--color-sand);
+    background: var(--color-cream);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.85rem;
+    font-size: 1rem;
+    color: var(--color-soil);
+    font-family: var(--font-body);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--color-moss);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(92, 122, 94, 0.18);
+    background-color: var(--color-white);
+}
+
+.form-control::placeholder {
+    color: var(--color-bark);
+    opacity: 0.6;
+}
+
+/* Grille pour postal_code et city */
+.checkout-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+
+/* ──────────────────────────────────────────
+   BOUTON DE PAIEMENT
+────────────────────────────────────────── */
+.btn-payment {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-moss);
+    color: var(--color-white);
+    border: 2px solid var(--color-moss);
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), transform var(--transition);
+    margin-top: var(--space-md);
+}
+
+.btn-payment:hover {
+    background-color: var(--color-moss-dark);
+    border-color: var(--color-moss-dark);
+}
+
+.btn-payment:active {
+    transform: scale(0.97);
+}
+
+.btn-payment i {
+    font-size: 1rem;
+}
+
+
+/* ──────────────────────────────────────────
+   RÉCAPITULATIF
+────────────────────────────────────────── */
+.order-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-xs);
+    color: var(--color-soil);
+    font-size: 0.95rem;
+}
+
+.order-summary-divider {
+    height: 1px;
+    background-color: var(--color-sand);
+    margin: var(--space-md) 0;
+    border: none;
+}
+
+.order-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--color-soil);
+}
+
+.order-summary-total__amount {
+    color: var(--color-moss);
+}
+
+
+/* ──────────────────────────────────────────
+   ALERTE SÉCURITÉ
+────────────────────────────────────────── */
+.alert {
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-md);
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+}
+
+.alert-info {
+    background-color: rgba(92, 122, 94, 0.1);
+    color: var(--color-soil);
+    border-color: var(--color-sage);
+}
+
+.alert i {
+    color: var(--color-moss);
+    margin-right: 0.4rem;
+}
+
+.alert small {
+    display: flex;
+    align-items: center;
+}
+
+
+/* ──────────────────────────────────────────
+   RESPONSIVE TABLETTE
+────────────────────────────────────────── */
+@media (min-width: 640px) {
+    .page-checkout .container {
+        padding: 0 var(--space-md);
+    }
+
+    .checkout-form .form-row {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+
+/* ──────────────────────────────────────────
+   RESPONSIVE DESKTOP
+────────────────────────────────────────── */
+@media (min-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1.4fr 1fr;
+        gap: var(--space-lg);
+    }
+}
+
+@media (min-width: 1024px) {
+    .page-checkout .container {
+        padding: 0 var(--space-lg);
+    }
+
+    .checkout-card__header {
+        padding: var(--space-lg);
+    }
+
+    .checkout-card__body {
+        padding: var(--space-lg);
+    }
+
+    .checkout-card__title {
+        font-size: 1.5rem;
+    }
+}
+
+
+/* ──────────────────────────────────────────
+   VERSION MOBILE
+────────────────────────────────────────── */
+@media (max-width: 639px) {
+    .page-checkout h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .checkout-card__header {
+        padding: var(--space-sm);
+    }
+
+    .checkout-card__body {
+        padding: var(--space-sm);
+    }
+
+    .checkout-card__title {
+        font-size: 1.1rem;
+    }
+
+    .btn-payment {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+
+/* ──────────────────────────────────────────
+   STYLES SYMFONY FORMS
+   (pour que les formulaires Symfony s'intègrent)
+────────────────────────────────────────── */
+
+/* Enlever les styles par défaut des divs de formulaire */
+.checkout-form > div {
+    margin-bottom: var(--space-md);
+}
+
+/* Labels Symfony */
+.checkout-form label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-soil);
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+/* Inputs Symfony */
+.checkout-form input[type="text"],
+.checkout-form input[type="email"],
+.checkout-form input[type="tel"],
+.checkout-form select,
+.checkout-form textarea {
+    width: 100%;
+    border: 1px solid var(--color-sand);
+    background: var(--color-cream);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.85rem;
+    font-size: 1rem;
+    color: var(--color-soil);
+    font-family: var(--font-body);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus,
+.checkout-form textarea:focus {
+    border-color: var(--color-moss);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(92, 122, 94, 0.18);
+    background-color: var(--color-white);
+}
+
+/* Messages d'erreur Symfony */
+.checkout-form .invalid-feedback,
+.checkout-form .form-error-message {
+    color: #c74242;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+/* Inputs invalides */
+.checkout-form input.is-invalid,
+.checkout-form select.is-invalid {
+    border-color: #c74242;
+}
+
+/* Aide sous les champs */
+.checkout-form .form-text,
+.checkout-form small {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--color-bark);
+    font-size: 0.85rem;
+}

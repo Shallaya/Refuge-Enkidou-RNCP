@@ -6,21 +6,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, TranslatorInterface $translator): Response
     {
         // si l'utilisateur est déjà connecté, on le redirige vers la page d'accueil
         if ($this->getUser()) {
             return $this->redirectToRoute('home');
         }
 
-        // get the login error if there is one
+        // afficher le message d'erreur de connexion s'il y en a un
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
+        // ajouter un message flash d'erreur si une erreur de connexion est présente
+        if ($error) {
+           $this->addFlash(
+                'error',
+                $translator->trans(
+                    $error->getMessageKey(),
+                    $error->getMessageData(),
+                    'security'
+                )
+            );
+        }
+
+        // dernier nom d'utilisateur saisi par l'utilisateur
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [

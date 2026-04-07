@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - Le Refuge d'Enkidou
+{% endblock %}
+
+{% block body %}
+	<div class="page-contact">
+		<div class="container">
+			
+			{% for label, messages in app.flashes %}
+				<div class="alert alert-{{ label }}">
+					{% for message in messages %}
+						<p>{{ message }}</p>
+					{% endfor %}
+				</div>
+			{% endfor %}
+
+			<p>Envoyez-nous un message via le formulaire ci-dessous. Nous répondons généralement sous 48h.</p>
+
+			{{ form_errors(form) }}
+
+			{{ form_start(form, {
+				action: path('app_contact'),
+				method: 'POST',
+				attr: {
+					class: 'contact-form',
+					'data-turbo': 'false'
+				}
+			}) }}
+			<h1>Contactez-nous</h1>
+			<div class="form-row">
+				{{ form_row(form.name) }}
+			</div>
+			<div class="form-row">
+				{{ form_row(form.email) }}
+			</div>
+			<div class="form-row">
+				{{ form_row(form.subject) }}
+			</div>
+			<div class="form-row">
+				{{ form_row(form.message) }}
+			</div>
+
+			<button type="submit">Envoyer</button>
+			{{ form_end(form) }}
+
+			<hr>
+			<p class="contact-page-footer">Sinon, écrivez-nous directement à
+				<a href="mailto:contact@refuge-enkidou.com">contact@refuge-enkidou.com</a>.</p>
+		</div>
+	</div>
+{% endblock %}

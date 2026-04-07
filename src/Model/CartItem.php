@@ -4,27 +4,34 @@ namespace App\Model;
 
 class CartItem
 {
-    private int $productId;
+    private int $variantId;
     private string $productName;
+    private string $variantName;
     private int $price;
     private int $quantity;
 
-    public function __construct(int $productId, string $productName, int $price)
+    public function __construct(int $variantId, string $productName, string $variantName, int $price)
     {
-        $this->productId = $productId;
+        $this->variantId = $variantId;
         $this->productName = $productName;
+        $this->variantName = $variantName;
         $this->price = $price;
         $this->quantity = 1;
     }
 
-    public function getProductId(): int
+    public function getVariantId(): int
     {
-        return $this->productId;
+        return $this->variantId;
     }
 
     public function getProductName(): string
     {
         return $this->productName;
+    }
+
+    public function getVariantName(): string
+    {
+        return $this->variantName;
     }
 
     public function getPrice(): int

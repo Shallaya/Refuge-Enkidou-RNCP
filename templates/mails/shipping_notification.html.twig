@@ -1,0 +1,11 @@
+{% extends 'mails/base.html.twig' %}
+
+{% block content %}
+
+    <h2>Votre commande a été expédiée !</h2>
+    <p>Bonjour {{ order.user.email }},</p>
+    <p>Nous sommes heureux de vous informer que votre commande <strong>{{ order.reference }}</strong> a été expédiée.</p>
+    {# <p>Vous pouvez suivre votre colis avec le numéro de suivi suivant : <strong>{{ order.trackingNumber }}</strong>.</p> #}
+    <p>Merci de votre confiance et à bientôt sur notre boutique !</p>
+
+{% endblock %}

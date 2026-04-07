@@ -37,8 +37,7 @@
             </li>
             
             <li class="navbar-item">
-                {# <a href="{{ path('app_contact') }}" class="navbar-link">Contact</a> #}
-                <a href="#" class="navbar-link">Contact</a>
+                <a href="{{ path('app_contact') }}" class="navbar-link">Contact</a>
             </li>
             
             {# Icônes panier et compte #}
@@ -50,12 +49,22 @@
                         <span class="cart-badge">{{ count }}</span>
                     {% endif %}
                 </a>
-                
+
                 {% if app.user %}
-                    {% if is_granted('ROLE_ADMIN') %} {# si l'utilisateur a le rôle admin, on affiche le lien vers l'admin #}
-                        <a href="{{ path('admin') }}" class="navbar-link">Admin</a>
-                    {% endif %}
-                    <a href="{{ path('app_logout') }}" class="navbar-link icon-link" title="Déconnexion">👤</a>
+                    <div class="dropdown account-dropdown">
+                        <a href="#" class="navbar-link icon-link dropdown-toggle" title="Mon espace">
+                            🏠 <span class="dropdown-icon">▼</span>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a href="{{ path('admin') }}" class="dropdown-link">Admin</a></li>
+                            {% endif %}
+                            <li><a href="#" class="dropdown-link">Profil</a></li>
+                            <li><a href="{{ path('app_order_list') }}" class="dropdown-link">Commandes</a></li>
+                            <li><a href="{{ path('app_logout') }}" class="dropdown-link">Déconnexion</a></li>
+                        </ul>
+                    </div>
                 {% else %}
                     <a href="{{ path('app_login') }}" class="navbar-link icon-link" title="Mon compte">👤</a>
                 {% endif %}

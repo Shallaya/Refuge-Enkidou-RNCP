@@ -1,7 +1,7 @@
 /* ──────────────────────────────────────────
    IMPORT FONTS
 ────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&display=swap');
+@import '../fonts/stylesheet.css';
 
 /* ──────────────────────────────────────────
    VARIABLES
@@ -20,7 +20,7 @@
 
     /* Typographie */
     --font-display: 'Playfair Display', Georgia, serif;
-    --font-body:    'Lato', sans-serif;
+    --font-body:    'Poppins', sans-serif;
 
     /* Espacements */
     --space-xs:  0.5rem;
@@ -53,6 +53,24 @@ body {
     font-size: 1rem;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    height: 100%;
+}
+
+main {
+    flex: 1;
+}
+
+h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -75,9 +93,13 @@ ul { list-style: none; }
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 5vw, 2.2rem);
     font-weight: 700;
-    color: var(--color-soil);
+    color: var(--color-bark);
     text-align: center;
     margin-bottom: var(--space-sm);
+}
+
+h1.section-title {
+    font-size: clamp(2rem, 7vw, 3rem);
 }
 
 .section-subtitle {
@@ -164,6 +186,55 @@ ul { list-style: none; }
 
 .btn--large { padding: 1rem 2rem; font-size: 1.05rem; }
 
+/* ──────────────────────────────────────────
+   BOUTONS SUPPLÉMENTAIRES
+────────────────────────────────────────── */
+.btn--outline {
+    background-color: transparent;
+    color: var(--color-soil);
+    border-color: var(--color-sand);
+}
+.btn--outline:hover {
+    background-color: var(--color-cream);
+    border-color: var(--color-bark);
+}
+ 
+.btn--success {
+    background-color: var(--color-moss);
+    color: var(--color-white);
+    border-color: var(--color-moss);
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+}
+.btn--success:hover {
+    background-color: var(--color-moss-dark);
+    border-color: var(--color-moss-dark);
+}
+ 
+.btn--danger {
+    background-color: #c74242;
+    color: var(--color-white);
+    border-color: #c74242;
+}
+.btn--danger:hover {
+    background-color: #a03636;
+    border-color: #a03636;
+}
+ 
+.btn--warning {
+    background-color: #e8a13a;
+    color: var(--color-white);
+    border-color: #e8a13a;
+}
+.btn--warning:hover {
+    background-color: #cc8b2d;
+    border-color: #cc8b2d;
+}
+ 
+.btn--sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
 
 /* ──────────────────────────────────────────
    HERO — MOBILE FIRST
@@ -541,6 +612,261 @@ ul { list-style: none; }
     color: var(--color-bark);
 }
 
+/* ──────────────────────────────────────────
+   UTILITAIRES DE LAYOUT
+────────────────────────────────────────── */
+.d-flex {
+    display: flex;
+}
+ 
+.align-items-center {
+    align-items: center;
+}
+ 
+.justify-content-between {
+    justify-content: space-between;
+}
+ 
+.gap-2 {
+    gap: var(--space-xs);
+}
+ 
+.mb-4 {
+    margin-bottom: var(--space-lg);
+}
+ 
+.mt-4 {
+    margin-top: var(--space-lg);
+}
+ 
+.text-end {
+    text-align: right;
+}
+ 
+.text-center {
+    text-align: center;
+}
+ 
+.fw-bold {
+    font-weight: 700;
+}
+ 
+.fs-5 {
+    font-size: 1.2rem;
+}
+ 
+ 
+/* ──────────────────────────────────────────
+   FORMULAIRES
+────────────────────────────────────────── */
+.form-control {
+    width: 100%;
+    border: 1px solid var(--color-sand);
+    background: var(--color-cream);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.85rem;
+    font-size: 1rem;
+    color: var(--color-soil);
+    font-family: var(--font-body);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+ 
+.form-control:focus {
+    border-color: var(--color-moss);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(92, 122, 94, 0.18);
+    background-color: var(--color-white);
+}
+ 
+.form-control-sm {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.9rem;
+}
+ 
+ 
+/* ──────────────────────────────────────────
+   TABLES
+────────────────────────────────────────── */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--color-soil);
+}
+ 
+.table-bordered {
+    border: 1px solid var(--color-sand);
+}
+ 
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--color-sand);
+    padding: var(--space-sm);
+}
+ 
+.table-dark {
+    background-color: var(--color-soil);
+    color: var(--color-white);
+}
+ 
+.table-light {
+    background-color: var(--color-cream);
+}
+ 
+.align-middle td {
+    vertical-align: middle;
+}
+
+/* ──────────────────────────────────────────
+   REASSURANCE
+────────────────────────────────────────── */
+
+.reassurance {
+    background-color: var(--color-cream);
+    padding: var(--space-sm) 0;
+    border-top: 1px solid var(--color-sand);
+    margin-top: var(--space-lg);
+}
+
+.reassurance__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    text-align: center;
+}
+
+.reassurance__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: 0.9rem;
+    color: var(--color-bark);
+}
+
+.reassurance__icon {
+    font-size: 1.6rem;
+}
+
+/* desktop */
+
+@media (min-width:1024px){
+
+.reassurance__grid{
+    grid-template-columns: repeat(4,1fr);
+}
+
+}
+
+/* ──────────────────────────────────────────
+   FOOTER
+────────────────────────────────────────── */
+
+.site-footer {
+    background-color: var(--color-soil);
+    color: var(--color-linen);
+    padding-top: var(--space-xl);
+}
+
+.footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+}
+
+.footer__title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-bottom: var(--space-xs);
+}
+
+.footer__heading {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-sage);
+    margin-bottom: var(--space-sm);
+}
+
+.footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.footer__links a {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    transition: opacity var(--transition), color var(--transition);
+}
+
+.footer__links a:hover {
+    opacity: 1;
+    color: var(--color-sage);
+}
+
+.footer__bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: var(--space-xl);
+    padding: var(--space-md) 0;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+
+/* tablette */
+@media (min-width:640px){
+
+.footer__grid{
+    grid-template-columns: repeat(2,1fr);
+}
+
+}
+
+/* desktop */
+@media (min-width:1024px){
+
+.footer__grid{
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+
+}
+
+/* ──────────────────────────────────────────
+   PAGES LÉGALES
+────────────────────────────────────────── */
+
+.legal {
+    padding-block: var(--space-xl);
+     margin: var(--space-sm);
+}
+
+.legal__content {
+    max-width: 750px;
+    margin-inline: auto;
+    background-color: var(--color-white);
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-sand);
+}
+
+.legal__content h2 {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-xs);
+    font-size: 1.1rem;
+    color: var(--color-bark);
+}
+
+.legal__content p,
+.legal__content li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-soil);
+}
+
+.legal__content ul {
+    margin-left: 1rem;
+    list-style: disc;
+}
 
 /* ──────────────────────────────────────────
    CTA BANNER — MOBILE FIRST

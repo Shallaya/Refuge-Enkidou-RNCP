@@ -61,11 +61,15 @@ class Product
     /**
      * @var Collection<int, ProductVariant>
      */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product')]
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['persist', 'remove'],
+    orphanRemoval: true)]
     private Collection $productVariants;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
-    private ?PetType $petType = null;
+    /**
+     * @var Collection<int, PetType>
+     */
+    #[ORM\ManyToMany(targetEntity: PetType::class, inversedBy: 'products')]
+    private Collection $petTypes;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
@@ -77,6 +81,7 @@ class Product
         $this->promotions = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
+        $this->petTypes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -207,17 +212,29 @@ class Product
         return $this;
     }
 
-    public function getPetType(): ?PetType
+    /**
+     * @return Collection<int, PetType>
+     */
+    public function getPetTypes(): Collection
     {
-        return $this->petType;
+        return $this->petTypes;
     }
 
-    public function setPetType(?PetType $petType): static
+    public function addPetType(PetType $petType): static
     {
-        $this->petType = $petType;
+        if (!$this->petTypes->contains($petType)) {
+            $this->petTypes->add($petType);
+        }
 
         return $this;
-    } 
+    }
+
+    public function removePetType(PetType $petType): static
+    {
+        $this->petTypes->removeElement($petType);
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, Promotion>
@@ -290,6 +307,40 @@ class Product
         $this->productVariants->removeElement($productVariant);
 
         return $this;
+    }
+
+    /**
+     * Récupère le variant par défaut (le premier actif)
+     */
+    public function getDefaultVariant(): ?ProductVariant
+    {
+        foreach ($this->productVariants as $variant) {
+            if ($variant->isActive()) {
+                return $variant;
+            }
+        }
+        
+        return $this->productVariants->first() ?: null;
+    }
+
+    /**
+     * Récupère le prix du variant par défaut
+     */
+    public function getPrice(): ?string
+    {
+        return $this->getDefaultVariant()?->getPrice();
+    }
+
+    /**
+     * Récupère le stock total
+     */
+    public function getTotalStock(): int
+    {
+        $total = 0;
+        foreach ($this->productVariants as $variant) {
+            $total += $variant->getStock();
+        }
+        return $total;
     }
 
     public function getCategory(): ?Category

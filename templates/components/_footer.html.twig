@@ -1,0 +1,50 @@
+<footer class="site-footer">
+    <div class="container footer__grid">
+
+        <div class="footer__brand">
+            <h3 class="footer__title">Le Refuge d'Enkidou</h3>
+            <p>
+                Boutique spécialisée dans les accessoires et
+                produits éco-responsables pour animaux. Qualité, confort et bien-être
+                pour vos compagnons.
+            </p>
+        </div>
+
+        <div>
+            <h4 class="footer__heading">Boutique</h4>
+            <ul class="footer__links">
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                {# <li><a href="{{ path('product_index') }}">Produits</a></li> #}
+                <li><a href="#">Nouveautés</a></li>
+                <li><a href="#">Promotions</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="footer__heading">Aide</h4>
+            <ul class="footer__links">
+                <li><a href="{{ path('app_contact') }}">Contact</a></li>
+                <li><a href="#">Livraison</a></li>
+                <li><a href="#">Retours</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="footer__heading">Légal</h4>
+            <ul class="footer__links">
+                <li><a href="{{ path('legal_mentions') }}">Mentions légales</a></li>
+                <li><a href="{{ path('legal_privacy') }}">Politique de confidentialité</a></li>
+                <li><a href="{{ path('legal_cgv') }}">Conditions générales de vente</a></li>                
+                <li><a href="{{ path('legal_cookies') }}">Politique de cookies</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer__bottom">
+        <div class="container footer__bottom-content">
+            <p>© {{ "now"|date("Y") }} Le Refuge d'Enkidou — Tous droits réservés</p>
+        </div>
+    </div>
+</footer>

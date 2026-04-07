@@ -25,6 +25,10 @@ class OrderItem
     #[ORM\Column(length: 255)]
     private ?string $productName = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductVariant $variant = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $productPrice = null;
 
@@ -69,6 +73,18 @@ class OrderItem
     public function setProductName(string $productName): static
     {
         $this->productName = $productName;
+        return $this;
+    }
+
+    public function getVariant(): ?ProductVariant
+    {
+        return $this->variant;
+    }
+
+    public function setVariant(?ProductVariant $variant): static
+    {
+        $this->variant = $variant;
+
         return $this;
     }
 

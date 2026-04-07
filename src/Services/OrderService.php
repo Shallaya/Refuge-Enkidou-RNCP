@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Entity\Order;
 use App\Entity\OrderItem;
-use App\Entity\Product;
+use App\Entity\ProductVariant;
 use App\Entity\User;
-use App\Model\CartItem;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderService
@@ -26,14 +25,14 @@ class OrderService
     public function createOrderFromCart(User $user, array $deliveryData): Order
     {
         $cart = $this->cartService->getCart();
-        
+
         if (empty($cart)) {
             throw new \Exception('Le panier est vide');
         }
 
         $order = new Order();
         $order->setUser($user);
-        
+
         // Informations de livraison
         $order->setDeliveryName($deliveryData['name']);
         $order->setDeliveryAddress($deliveryData['address']);
@@ -43,18 +42,27 @@ class OrderService
         $order->setDeliveryPhone($deliveryData['phone'] ?? null);
 
         $total = 0.0;
-        $productRepository = $this->entityManager->getRepository(Product::class);
+        $variantRepository = $this->entityManager->getRepository(ProductVariant::class);
 
         // Création des items de commande
         foreach ($cart as $cartItem) {
-                        
+
             // Récupération du produit complet depuis la base de données
-            $product = $productRepository->find($cartItem->getProductId());
+            $variant = $variantRepository->find($cartItem->getVariantId());
             
+            if (!$variant) {
+                throw new \Exception(sprintf(
+                    'Variante avec ID %d introuvable',
+                    $cartItem->getVariantId()
+                ));
+            }
+
+            $product = $variant->getProduct();
+
             if (!$product) {
                 throw new \Exception(sprintf(
-                    'Produit avec ID %d introuvable',
-                    $cartItem->getProductId()
+                    'Produit introuvable pour la variante ID %d',
+                    $variant->getId()
                 ));
             }
 
@@ -62,23 +70,24 @@ class OrderService
             $orderItem = new OrderItem();
             $orderItem->setProduct($product);
             $orderItem->setProductName($cartItem->getProductName());
-            
+            $orderItem->setVariant($variant);
+
             // Conversion du prix en centimes vers euros (si ton price est en centimes)
-            // Si ton price est déjà en euros, enlève la division par 100
-            $priceInEuros = $cartItem->getPrice();
-            $orderItem->setProductPrice((string) $priceInEuros);
-            
-            $orderItem->setQuantity($cartItem->getQuantity());
-            
+            $priceInEuros = $cartItem->getPrice() / 100;
+            $orderItem->setProductPrice(number_format($priceInEuros, 2, '.', ' '));
+
+            $quantity = $cartItem->getQuantity();
+            $orderItem->setQuantity($quantity);
+
             // Calcul du total pour cet item
-            $itemTotal = $priceInEuros * $cartItem->getQuantity();
-            $orderItem->setTotal((string) $itemTotal);
-            
+            $itemTotal = $priceInEuros * $quantity;
+            $orderItem->setTotal(number_format($itemTotal, 2, '.', ' '));
+
             $order->addOrderItem($orderItem);
             $total += $itemTotal;
         }
 
-        $order->setTotalAmount((string) $total);
+        $order->setTotalAmount(number_format($total, 2, '.', ' '));
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();

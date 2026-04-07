@@ -3,64 +3,92 @@
 {% block title %}Finaliser ma commande{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <h1>Finaliser ma commande</h1>
-
-    <div class="row">
-        <div class="col-md-7">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Informations de livraison</h5>
-                </div>
-                <div class="card-body">
-                    {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
-                        {{ form_row(form.name) }}
-                        {{ form_row(form.address) }}
-                        <div class="row">
-                            <div class="col-md-4">
-                                {{ form_row(form.postal_code) }}
+<div class="page-checkout">
+    <div class="container">
+        <h1>Finaliser ma commande</h1>
+        
+        <div class="checkout-grid">
+            {# Colonne principale - Formulaire de livraison #}
+            <div class="checkout-main">
+                <div class="checkout-card">
+                    <div class="checkout-card__header">
+                        <h5 class="checkout-card__title">Informations de livraison</h5>
+                    </div>
+                    <div class="checkout-card__body">
+                        {{ form_start(form, { attr: { 'class': 'checkout-form', 'data-turbo': 'false' } }) }}
+                            <div class="form-group">
+                                {{ form_label(form.name) }}
+                                {{ form_widget(form.name, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.name) }}
                             </div>
-                            <div class="col-md-8">
-                                {{ form_row(form.city) }}
+                            
+                            <div class="form-group">
+                                {{ form_label(form.address) }}
+                                {{ form_widget(form.address, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.address) }}
                             </div>
-                        </div>
-                        {{ form_row(form.country) }}
-                        {{ form_row(form.phone) }}
-                        
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
-                            <i class="fas fa-lock me-2"></i>
-                            Procéder au paiement sécurisé
-                        </button>
-                    {{ form_end(form) }}
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    {{ form_label(form.postal_code) }}
+                                    {{ form_widget(form.postal_code, { attr: { class: 'form-control' } }) }}
+                                    {{ form_errors(form.postal_code) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.city) }}
+                                    {{ form_widget(form.city, { attr: { class: 'form-control' } }) }}
+                                    {{ form_errors(form.city) }}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form_label(form.country) }}
+                                {{ form_widget(form.country, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.country) }}
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form_label(form.phone) }}
+                                {{ form_widget(form.phone, { attr: { class: 'form-control' } }) }}
+                                {{ form_errors(form.phone) }}
+                            </div>
+                            
+                            <button type="submit" class="btn-payment">
+                                <i class="fas fa-lock"></i>
+                                Procéder au paiement sécurisé
+                            </button>
+                        {{ form_end(form) }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Récapitulatif de la commande</h5>
-                </div>
-                <div class="card-body">
-                    {% for item in cart %}
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>{{ item.productName }} x{{ item.quantity }}</span>
-                            <span>{{ ((item.price / 100) * item.quantity)|number_format(2, ',', ' ') }} €</span>
-                        </div>
-                    {% endfor %}
-                    
-                    <hr>
-                    
-                    <div class="d-flex justify-content-between">
-                        <strong>Total</strong>
-                        <strong class="text-primary">{{ (total / 100)|number_format(2, ',', ' ') }} €</strong>
+            {# Colonne sidebar - Récapitulatif #}
+            <div class="checkout-sidebar">
+                <div class="checkout-card">
+                    <div class="checkout-card__header">
+                        <h5 class="checkout-card__title">Récapitulatif de la commande</h5>
                     </div>
-
-                    <div class="alert alert-info mt-3">
-                        <small>
-                            <i class="fas fa-shield-alt me-2"></i>
-                            Paiement sécurisé par Stripe
-                        </small>
+                    <div class="checkout-card__body">
+                        {% for item in cart %}
+                            <div class="order-summary-item">
+                                <span>{{ item.productName }} x{{ item.quantity }}</span>
+                                <span>{{ ((item.price / 100) * item.quantity)|number_format(2, ',', ' ') }} €</span>
+                            </div>
+                        {% endfor %}
+                        
+                        <hr class="order-summary-divider">
+                        
+                        <div class="order-summary-total">
+                            <strong>Total</strong>
+                            <strong class="order-summary-total__amount">{{ (total / 100)|number_format(2, ',', ' ') }} €</strong>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <small>
+                                <i class="fas fa-shield-alt"></i>
+                                Paiement sécurisé par Stripe
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>

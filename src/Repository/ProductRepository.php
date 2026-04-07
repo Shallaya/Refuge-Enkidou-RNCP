@@ -28,8 +28,9 @@ class ProductRepository extends ServiceEntityRepository
     ): array {
         $queryBuilder = $this->createQueryBuilder('p')
             ->leftJoin('p.productVariants', 'v')
+            ->join('p.petTypes', 'pt')
             ->addSelect('p') // Évite les requêtes N+1
-            ->where('p.petType = :petType')
+            ->where('pt = :petType')
             ->andWhere('p.isActive = true')
             ->andWhere('v.isActive = true')
             ->setParameter('petType', $petType)

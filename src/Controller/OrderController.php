@@ -33,11 +33,6 @@ class OrderController extends AbstractController
     #[Route('/checkout', name: 'app_order_checkout')]
     public function checkout(Request $request): Response
     {
-    //     dump([
-    //     'method' => $request->getMethod(),
-    //     'isSubmitted' => $request->isMethod('POST'),
-    //     'data' => $request->request->all(),
-    // ]);
         $cart = $this->cartService->getCart();
         
         if (empty($cart)) {

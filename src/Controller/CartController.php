@@ -51,6 +51,15 @@ final class CartController extends AbstractController
         return $this->redirectAfterCart($request);
     }
 
+    #[Route('/cart/update/{id}', name: 'app_cart_update', methods: ['POST'])]
+    public function update(int $id, Request $request): Response
+    {
+        $quantity = (int) $request->request->get('quantity', 1);
+        $this->cartService->updateQuantity($id, $quantity);
+        $this->updateCartSession($request);
+        return $this->redirectToRoute('app_cart_index');
+    }
+
     #[Route('/cart/remove/{id}', name: 'app_cart_remove', methods: ['POST'])]
     public function remove(int $id, Request $request): Response
     {

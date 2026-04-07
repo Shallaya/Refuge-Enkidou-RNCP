@@ -2,95 +2,123 @@
 
 {% block title %}{{ product.name }} - Le Refuge d'Enkidou{% endblock %}
 
-{# {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/pet-type.css') }}">
-{% endblock %} #}
-
 {% block body %}
-<div class="container product-detail">
-    {# Fil d'Ariane #}
-    <nav aria-label="Fil d'Ariane" class="breadcrumb">
-        <a href="{{ path('home') }}">Accueil</a> /
-        <a href="{{ path('app_pet_type_show', {slug: product.petType.slug}) }}">
-            {{ product.petType.name }}
-        </a> /
-        {% if product.category %}
-        <a href="{{ path('app_pet_type_show', {slug: product.petType.slug, category: product.category.slug}) }}">
-            {{ product.category.name }}
-        </a> /
-        {% endif %}
-        <span>{{ product.name }}</span>
-    </nav>
-    
-    <div class="product-layout">
-        {# Colonne gauche : Image #}
-        <div class="product-gallery">
-            {% if product.image %}
-                <img src="{{ asset('images/products/' ~ product.image) }}" 
-                     alt="{{ product.name }}" 
-                     class="product-img">
-            {% else %}
-                {# <div class="product-img product-img--placeholder">🌿</div> #}
-                <img src="{{ asset('images/test.png') }}" 
-                     alt="{{ product.name }}" 
-                     class="product-img">
+<div class="pet-type-page product-detail-page">
+    <div class="container">
+        {# Fil d'Ariane #}
+        <nav aria-label="Fil d'Ariane" class="breadcrumb">
+            <a href="{{ path('home') }}">Accueil</a>
+            <span class="breadcrumb__separator">/</span>
+            <a href="{{ path('app_pet_type_show', {slug: currentPetType.slug}) }}">
+                {{ currentPetType.name }}
+            </a>
+            {% if product.category %}
+            <span class="breadcrumb__separator">/</span>
+            <a href="{{ path('app_pet_type_show', {slug: currentPetType.slug, category: product.category.slug}) }}">
+                {{ product.category.name }}
+            </a>
             {% endif %}
-        </div>
-        
-        {# Colonne droite : Infos #}
-        <div class="product-info">
-            <h1>{{ product.name }}</h1>
-            
-            <p class="product-short-desc">{{ product.shortDescription }}</p>
-            
-            {# Sélection des variantes #}
-            {% if variants|length > 0 %}
-                {# <form method="post" action="{{ path('app_cart_add') }}" class="product-form"> #} {# À adapter selon la route d'ajout au panier #}
-                {# Calculer s'il y a du stock sur au moins une variante #}
-                {% set hasStock = false %}
-                {% for variant in variants %}
-                    {% if variant.stock > 0 %}
-                        {% set hasStock = true %}
-                    {% endif %}
-                {% endfor %}
+            <span class="breadcrumb__separator">/</span>
+            <span class="breadcrumb__current">{{ product.name }}</span>
+        </nav>
 
-                <form method="post" action="{{ path('app_cart_add', {id: product.id}) }}" class="product-form">
-                    <div class="variant-selector">
-                        <label for="variant">Choisissez une option :</label>
-                        <select name="variant_id" id="variant" required>
-                            {% for variant in variants %}
-                                <option value="{{ variant.id }}" {% if variant.stock == 0 %}disabled{% endif %}>
-                                    {% if variant.size %}{{ variant.size }}{% endif %}
-                                    {% if variant.weightValue %}{{ variant.size ? ' - ' }}{{ variant.weightValue }}{{ variant.weightUnit }}{% endif %}
-                                    {% if variant.volumeValue %}{{ (variant.size or variant.weightValue) ? ' - ' }}{{ variant.volumeValue }}{{ variant.volumeUnit }}{% endif %}
-                                    {% if variant.color %}{{ (variant.size or variant.weightValue or variant.volumeValue) ? ' - ' }}{{ variant.color }}{% endif %}
-                                    - {{ variant.price|number_format(2, ',', ' ') }} €
-                                    {% if variant.stock == 0 %}
-                                        (Rupture)
-                                    {% elseif variant.stock < 5 %}
-                                        ({{ variant.stock }} en stock)
+        <div class="pet-type-layout">
+            {# Sidebar gauche - Réutilise le même composant que la page pet-type #}
+            {% include 'components/_category_sidebar.html.twig' with {
+                petType: currentPetType,
+                categories: currentPetType.categories,
+                selectedCategorySlug: product.category ? product.category.slug : null
+            } %}
+
+            {# Contenu principal #}
+            <main class="pet-type-layout__main">
+                <div class="product-detail">
+                    {# Titre principal #}
+                    <h1 class="product-detail__title">{{ product.name }}</h1>
+                    
+                    {# Layout Image + Infos #}
+                    <div class="product-detail__content">
+                        {# Image produit #}
+                        <div class="product-detail__image">
+                            {% if product.image %}
+                                <img src="{{ asset('uploads/products/' ~ product.image) }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image">
+                            {% else %}
+                                <img src="{{ asset('images/test.png') }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image">
+                            {% endif %}
+                        </div>
+                        
+                        {# Informations et formulaire #}
+                        <div class="product-detail__info">
+                            {% if product.shortDescription %}
+                            <p class="product-short-desc">{{ product.shortDescription }}</p>
+                            {% endif %}
+                            
+                            {# Sélection des variantes #}
+                            {% if variants|length > 0 %}
+                                {# Calculer s'il y a du stock sur au moins une variante #}
+                                {% set hasStock = false %}
+                                {% for variant in variants %}
+                                    {% if variant.stock > 0 %}
+                                        {% set hasStock = true %}
                                     {% endif %}
-                                </option>
-                            {% endfor %}
-                        </select>
+                                {% endfor %}
+
+                                <form method="post" action="{{ path('app_cart_add', {id: product.id}) }}" class="product-form">
+                                    <div class="product-variants">
+                                        <label for="variant" class="product-variants__label">
+                                            Choisissez une option :
+                                        </label>
+                                        <select name="variant_id" id="variant" class="product-variants__select" required>
+                                            {% for variant in variants %}
+                                                <option value="{{ variant.id }}" {% if variant.stock == 0 %}disabled{% endif %}>
+                                                    {% if variant.size %}{{ variant.size }}{% endif %}
+                                                    {% if variant.weightValue %}{{ variant.size ? ' - ' }}{{ variant.weightValue }}{{ variant.weightUnit }}{% endif %}
+                                                    {% if variant.volumeValue %}{{ (variant.size or variant.weightValue) ? ' - ' }}{{ variant.volumeValue }}{{ variant.volumeUnit }}{% endif %}
+                                                    {% if variant.color %}{{ (variant.size or variant.weightValue or variant.volumeValue) ? ' - ' }}{{ variant.color }}{% endif %}
+                                                    - {{ variant.price|number_format(2, ',', ' ') }} €
+                                                    {% if variant.stock == 0 %}
+                                                        (Rupture de stock)
+                                                    {% elseif variant.stock < 5 %}
+                                                        ({{ variant.stock }} en stock)
+                                                    {% endif %}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <button type="submit" 
+                                            class="btn btn--primary btn--large product-add-to-cart"
+                                            {% if not hasStock %}disabled{% endif %}>
+                                        {% if hasStock %}
+                                            Ajouter au panier
+                                        {% else %}
+                                            Produit indisponible
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="product-no-variants">
+                                    <p>Aucune variante disponible pour le moment.</p>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100"
-                            {% if not hasStock %}disabled{% endif %}>
-                        Ajouter au panier
-                    </button>
-                </form>
-            {% else %}
-                <p>Aucune variante disponible.</p>
-            {% endif %}
-            
-            {# Description complète #}
-            {% if product.description %}
-            <div class="product-description">
-                <h2>Description</h2>
-                {{ product.description|nl2br }}
-            </div>
-            {% endif %}
+                    
+                    {# Description complète en dessous #}
+                    {% if product.description %}
+                    <div class="product-description">
+                        <h2 class="product-description__title">Description</h2>
+                        <div class="product-description__content">
+                            {{ product.description|nl2br }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </main>
         </div>
     </div>
 </div>

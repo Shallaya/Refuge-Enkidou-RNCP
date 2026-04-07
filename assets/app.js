@@ -8,5 +8,7 @@ import './stimulus_bootstrap.js';
 import './styles/app.css';
 import './styles/navbar.css';
 import './styles/pet-type.css';
+import './styles/home.css';
+import './styles/form.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

@@ -23,8 +23,8 @@ class ProductController extends AbstractController
     /**
      * Affiche le détail d'un produit
      */
-    #[Route('/produit/{slug}', name: 'app_product_show')]
-    public function show(string $slug, ProductRepository $productRepository): Response
+    #[Route('/{petTypeSlug}/produit/{slug}', name: 'app_product_show')]
+    public function show(string $petTypeSlug, string $slug, ProductRepository $productRepository): Response
     {
         $product = $productRepository->findOneBy(['slug' => $slug]);
 
@@ -36,6 +36,20 @@ class ProductController extends AbstractController
         if (!$product->isActive()) {
             throw $this->createNotFoundException('Ce produit n\'est plus disponible.');
         }
+
+        // Vérifier que le produit appartient bien au pet-type de l’URL
+        $currentPetType = null;
+
+        foreach ($product->getPetTypes() as $petType) {
+            if ($petType->getSlug() === $petTypeSlug) {
+                $currentPetType = $petType;
+                break;
+            }
+        }
+
+        if (!$currentPetType) {
+            throw $this->createNotFoundException('Ce produit n\'appartient pas à ce type d’animal.');
+        }
         
         // Récupérer uniquement les variantes actives
         $activeVariants = $product->getProductVariants()->filter(
@@ -45,6 +59,7 @@ class ProductController extends AbstractController
         return $this->render('product/show.html.twig', [
             'product' => $product,
             'variants' => $activeVariants,
+            'currentPetType' => $currentPetType,
         ]);
     }
 }

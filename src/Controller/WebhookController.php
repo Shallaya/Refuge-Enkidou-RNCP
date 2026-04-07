@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Services\OrderEmailService;
+use App\Services\MailService;
 use App\Services\StripeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
@@ -18,7 +18,7 @@ class WebhookController extends AbstractController
     public function __construct(
         private StripeService $stripeService,
         private EntityManagerInterface $entityManager,
-        private OrderEmailService $orderEmailService,
+        private MailService $mailService,
         private string $stripeWebhookSecret
     ) {}
 
@@ -79,29 +79,44 @@ class WebhookController extends AbstractController
             ->getRepository(Order::class)
             ->findOneBy(['reference' => $orderReference]);
 
-        $email = $order?->getUser()?->getEmail() ?? 'no email';
-    
-        if ($order) {
-            $order->setStatus('paid');
-            
-            // Le payment_intent peut être une string ou un objet PaymentIntent
-            $paymentIntentId = is_string($session->payment_intent) 
-                ? $session->payment_intent 
-                : $session->payment_intent->id ?? null;
-                
-            if ($paymentIntentId) {
-                $order->setStripePaymentIntentId($paymentIntentId);
-            }
-            
-            $this->entityManager->flush();
+        // Récupérer l'email de l'utilisateur pour l'envoi de l'email de confirmation
+        // $email = $order?->getUser()?->getEmail() ?? 'no email';
 
-            // Envoi de l'email de confirmation
-            try {
-                $this->orderEmailService->sendOrderConfirmation($order);
-            } catch (\Exception $e) {
-                // Logger l'erreur mais ne pas bloquer le webhook
-                // En production, tu peux utiliser un logger
-            }
+        if (!$order || $order->getStatus() === 'paid') {
+            return;
+        }       
+
+        // Décrémenter le stock
+        foreach ($order->getOrderItems() as $item) {
+
+            $variant = $item->getVariant();
+            if (!$variant) { continue;}
+            $quantity = $item->getQuantity();
+
+            $variant->setStock(
+                max(0, $variant->getStock() - $quantity)
+            );
+        }
+
+        $order->setStatus('paid');
+        
+        // Le payment_intent peut être une string ou un objet PaymentIntent
+        $paymentIntentId = is_string($session->payment_intent) 
+            ? $session->payment_intent 
+            : $session->payment_intent->id ?? null;
+            
+        if ($paymentIntentId) {
+            $order->setStripePaymentIntentId($paymentIntentId);
+        }
+        
+        $this->entityManager->flush();
+
+        // Envoi de l'email de confirmation
+        try {
+            $this->mailService->sendOrderConfirmation($order);
+        } catch (\Exception $e) {
+            // Logger l'erreur mais ne pas bloquer le webhook
+            // En production, tu peux utiliser un logger
         }
     }
 

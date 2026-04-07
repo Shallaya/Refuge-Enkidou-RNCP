@@ -36,7 +36,7 @@ class StripeService
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => (int)((float)$productPrice), // Stripe utilise les centimes
+                    'unit_amount' => (int) round(((float) $productPrice) * 100), // Stripe utilise les centimes
                     'product_data' => [
                         'name' => $productName,
                     ],

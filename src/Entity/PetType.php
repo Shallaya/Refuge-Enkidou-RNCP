@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Product;
 use App\Repository\PetTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +22,7 @@ class PetType
     /**
      * @var Collection<int, Product>
      */
-    #[ORM\OneToMany(mappedBy: 'petType', targetEntity: Product::class)]
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'petTypes')]
     private Collection $products;
 
     #[ORM\Column(length: 255)]
@@ -37,6 +38,11 @@ class PetType
     {
         $this->products = new ArrayCollection();
         $this->categories = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() ?? '';
     }
 
     public function getId(): ?int
@@ -65,65 +71,63 @@ class PetType
     }
 
     public function addProduct(Product $product): static
-{
-    if (!$this->products->contains($product)) {
-        $this->products->add($product);
-        $product->setPetType($this);
-    }
-
-    return $this;
-}
-
-public function removeProduct(Product $product): static
-{
-    if ($this->products->removeElement($product)) {
-        if ($product->getPetType() === $this) {
-            $product->setPetType(null);
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addPetType($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
-
-public function getSlug(): ?string
-{
-    return $this->slug;
-}
-
-public function setSlug(string $slug): static
-{
-    $this->slug = $slug;
-
-    return $this;
-}
-
-/**
- * @return Collection<int, Category>
- */
-public function getCategories(): Collection
-{
-    return $this->categories;
-}
-
-public function addCategory(Category $category): static
-{
-    if (!$this->categories->contains($category)) {
-        $this->categories->add($category);
-        $category->setPetType($this);
-    }
-
-    return $this;
-}
-
-public function removeCategory(Category $category): static
-{
-    if ($this->categories->removeElement($category)) {
-        // set the owning side to null (unless already changed)
-        if ($category->getPetType() === $this) {
-            $category->setPetType(null);
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removePetType($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->setPetType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getPetType() === $this) {
+                $category->setPetType(null);
+            }
+        }
+
+        return $this;
+    }
 }

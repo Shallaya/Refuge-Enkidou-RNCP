@@ -1,41 +1,8 @@
-:root {
+/* :root {
     --primary-color: #6B8E4E;
     --secondary-color: #E8DCCB;
-    --accent-color: #E2A85A;
-    
-  }
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/Poppins-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/Poppins-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/Poppins-SemiBold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Playfair Display';
-    src: url('../fonts/PlayfairDisplay-SemiBold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
+    --accent-color: #E2A85A;    
+  } */
 
 * {
     margin: 0;

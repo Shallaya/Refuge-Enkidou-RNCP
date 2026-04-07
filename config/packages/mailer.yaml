@@ -2,6 +2,6 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            sender: 'noreply@refugeenkidou.com'
+            sender: 'noreply@refuge-enkidou.com'
         headers:
-            From: 'Le Refuge d''Enkidou <noreply@refugeenkidou.com>'
+            From: 'Le Refuge d''Enkidou <noreply@refuge-enkidou.com>'

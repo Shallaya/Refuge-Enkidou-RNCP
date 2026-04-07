@@ -273,6 +273,11 @@
 .page-header {
     margin-bottom: var(--space-lg);
     text-align: center;
+    background: #fff;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-sand);
+    padding: var(--space-sm) var(--space-md);
+    margin-top: var(--space-sm);
 }
 
 @media (min-width: 768px) {
@@ -336,9 +341,9 @@
    ========================================================================== */
 
 /* Réutilise .products__grid de home.css mais avec des ajustements */
-.pet-type-layout__main .products-grid {
+/* .pet-type-layout__main .products__grid {
     margin-top: var(--space-md);
-}
+} */
 
 /* ==========================================================================
    5. CARTE PRODUIT - Extensions spécifiques
@@ -359,7 +364,7 @@
 .pet-type-page .product-card__img-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 100%; /* Ratio 1:1 */
+    padding-top: 65.31%; /* Ratio 400x261 = 1.531 -> 100% / 1.531 = 65.31% */
     background-color: var(--color-linen);
     overflow: hidden;
 }
@@ -369,8 +374,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     transition: transform 0.4s ease;
 }
 
@@ -392,6 +397,49 @@
 
 .pet-type-page .product-card__link:hover .product-card__cta {
     transform: translateX(4px);
+}
+
+/* Mobile très petit : 1 colonne */
+@media (max-width: 399px) {
+    .pet-type-page .products__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pet-type-page .product-card__price {
+        white-space: nowrap;
+    }
+
+    .pet-type-page .product-card__footer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+}
+
+/* Mobile standard : 2 colonnes de 400px à 639px */
+@media (min-width: 400px) and (max-width: 639px) {
+    .pet-type-page .products__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pet-type-page .product-card__price {
+        white-space: nowrap;
+    }
+
+    .pet-type-page .product-card__footer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+}
+
+/* Tablette et plus : 3 colonnes (hérite de home.css) */
+@media (min-width: 640px) {
+    .pet-type-page .products__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* ==========================================================================
@@ -425,13 +473,13 @@
 
 /* home.css définit déjà .btn et .btn--secondary */
 /* Ajout d'une variante pour la page pet-type */
-.btn--outline {
+.pet-type-page .btn--outline {
     background-color: transparent;
     color: var(--color-moss);
     border-color: var(--color-moss);
 }
 
-.btn--outline:hover {
+.pet-type-page .btn--outline:hover {
     background-color: var(--color-moss);
     color: var(--color-white);
 }

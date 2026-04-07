@@ -1,65 +1,83 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Panier
-{% endblock %}
+{% block title %}Mon Panier{% endblock %}
 
 {% block body %}
-	<h2 class="mb-4">Mon Panier</h2>
-
-	{% if items is empty %}
-
-		<div class="alert alert-info">Votre panier est vide.</div>
-		<a href="{{ path('home') }}" class="btn btn-primary">
-			Continuer mes achats
-		</a>
-
-	{% else %}
-
-		<table class="table table-bordered align-middle">
-			<thead class="table-dark">
-				<tr>
-					<th>Produit</th>
-					<th>Prix unitaire</th>
-					<th>Quantité</th>
-					<th>total</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for item in items %}
-					<tr>
-						<td>{{ item.productName }}</td>
-						<td>{{ (item.price / 100)|number_format(2, ',', ' ') }}
-							€</td>
-						<td>{{ item.quantity }}</td>
-						<td>{{ (item.total / 100)|number_format(2, ',', ' ') }}
-							€</td>
-						<td>
-							<form method="post" action="{{ path('app_cart_remove', {id: item.productId}) }}">							<input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">								<button class="btn btn-sm btn-danger">Supprimer</button>
-							</form>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-			<tfoot>
-				<tr class="fw-bold fs-5">
-					<td colspan="3" class="text-end">Total :</td>
-					<td>{{ (total / 100)|number_format(2, ',', ' ') }}
-						€</td>
-					<td>
-						<form method="post" action="{{ path('app_cart_clear') }}">
-							<input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
-							<button class="btn btn-sm btn-warning">Vider</button>
-						</form>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-
-		<a href="{{ path('app_order_checkout') }}" class="btn btn-success btn-lg">
-			<i class="fas fa-lock me-2"></i>
-			💳 Procéder au paiement
-		</a>
-		
-	{% endif %}
+<div class="page-cart">
+    <div class="container">
+        <h2>Mon Panier</h2>
+        
+        {% if items is empty %}
+            <div class="alert alert-info">Votre panier est vide.</div>
+            <a href="{{ path('home') }}" class="btn btn--primary">
+                Continuer mes achats
+            </a>
+        {% else %}
+            <div class="cart-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th class="col-price">Prix unitaire</th>
+                            <th class="col-quantity">Quantité</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td class="product-name">{{ item.productName }}<br><em>{{ item.variantName }}</em></td>
+                                <td class="product-price col-price">{{ (item.price / 100)|number_format(2, ',', ' ') }} €</td>
+                                <td class="col-quantity">
+                                    <form method="post" action="{{ path('app_cart_update', {id: item.variantId}) }}" class="quantity-form">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_update') }}">
+                                        
+                                        <input type="number" 
+                                               name="quantity" 
+                                               value="{{ item.quantity }}" 
+                                               min="1" 
+                                               max="99"
+                                               class="quantity-input" 
+                                               onchange="this.form.submit()">
+                                    </form>
+                                </td>
+                                <td class="product-total">{{ (item.total / 100)|number_format(2, ',', ' ') }} €</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_cart_remove', {id: item.variantId}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
+                                        <button type="submit" class="btn-remove">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="footer-label">Total :</td>
+                            <td class="col-price"></td>
+                            <td class="col-quantity"></td>
+                            <td class="product-total">{{ (total / 100)|number_format(2, ',', ' ') }} €</td>
+                            <td>
+                                <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Vider tout le panier ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
+                                    <button type="submit" class="btn-clear">Vider</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div class="cart-actions">
+                <a href="{{ path('home') }}" class="btn-continue">
+                    ← Continuer mes achats
+                </a>
+                <a href="{{ path('app_order_checkout') }}" class="btn-checkout">
+                    💳 Procéder au paiement
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

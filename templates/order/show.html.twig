@@ -3,80 +3,95 @@
 {% block title %}Commande {{ order.reference }}{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Commande {{ order.reference }}</h5>
-                    {% if order.status == 'paid' %}
-                        <span class="badge bg-success">Payée</span>
-                    {% elseif order.status == 'pending' %}
-                        <span class="badge bg-warning">En attente</span>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    <p><strong>Date :</strong> {{ order.createdAt|date('d/m/Y à H:i') }}</p>
-                    
-                    <h6 class="mt-4">Articles commandés</h6>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Produit</th>
-                                <th>Prix unitaire</th>
-                                <th>Quantité</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in order.orderItems %}
-                                <tr>
-                                    <td>{{ item.productName }}</td>
-                                    <td>{{ (item.productPrice / 100)|number_format(2, ',', ' ') }} €</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>{{ (item.total / 100)|number_format(2, ',', ' ') }} €</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3" class="text-end">Total TTC</th>
-                                <th>{{ (order.totalAmount / 100)|number_format(2, ',', ' ') }} €</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Adresse de livraison</h5>
-                </div>
-                <div class="card-body">
-                    <address>
-                        <strong>{{ order.deliveryName }}</strong><br>
-                        {{ order.deliveryAddress }}<br>
-                        {{ order.deliveryPostalCode }} {{ order.deliveryCity }}<br>
-                        {{ order.deliveryCountry }}<br>
-                        {% if order.deliveryPhone %}
-                            <i class="fas fa-phone"></i> {{ order.deliveryPhone }}
+<div class="page-order-detail">
+    <div class="container">
+        <div class="order-detail-grid">
+            {# Colonne principale - Détails de la commande #}
+            <div class="order-main">
+                <div class="order-card">
+                    <div class="order-card__header">
+                        <h5 class="order-card__title">Commande {{ order.reference }}</h5>
+                        {% if order.status == 'paid' %}
+                            <span class="status-badge status-badge--paid">Payée</span>
+                        {% elseif order.status == 'pending' %}
+                            <span class="status-badge status-badge--pending">En attente</span>
+                        {% elseif order.status == 'shipped' %}
+                            <span class="status-badge status-badge--shipped">Expédiée</span>
+                        {% elseif order.status == 'delivered' %}
+                            <span class="status-badge status-badge--delivered">Livrée</span>
+                        {% else %}
+                            <span class="status-badge status-badge--cancelled">Annulée</span>
                         {% endif %}
-                    </address>
+                    </div>
+                    <div class="order-card__body">
+                        <div class="order-info">
+                            <p><strong>Date :</strong> {{ order.createdAt|date('d/m/Y à H:i') }}</p>
+                        </div>
+                        
+                        <h6 class="section-subtitle">Articles commandés</h6>
+                        <table class="order-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Quantité</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.orderItems %}
+                                    <tr>
+                                        <td data-label="Produit">{{ item.productName }}</td>
+                                        <td data-label="Prix unitaire">{{ (item.productPrice)|number_format(2, ',', ' ') }} €</td>
+                                        <td data-label="Quantité">{{ item.quantity }}</td>
+                                        <td data-label="Total">{{ (item.total)|number_format(2, ',', ' ') }} €</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total TTC</th>
+                                    <th></th>
+                                    <th></th>
+                                    {# <th>Total TTC</th> #}
+                                    <th>{{ (order.totalAmount)|number_format(2, ',', ' ') }} €</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            {% if order.status == 'pending' %}
-                <a href="{{ path('app_order_checkout', { id: order.id }) }}" class="btn btn-success mt-3">
-                    Payer la commande
-                </a>
-            {% endif %}
+            {# Colonne sidebar - Adresse et actions #}
+            <div class="order-sidebar">
+                <div class="order-card">
+                    <div class="order-card__header">
+                        <h5 class="order-card__title">Adresse de livraison</h5>
+                    </div>
+                    <div class="order-card__body">
+                        <address class="delivery-address">
+                            <strong>{{ order.deliveryName }}</strong>
+                            {{ order.deliveryAddress }}<br>
+                            {{ order.deliveryPostalCode }} {{ order.deliveryCity }}<br>
+                            {{ order.deliveryCountry }}<br>
+                            {% if order.deliveryPhone %}
+                                <i class="fas fa-phone"></i> {{ order.deliveryPhone }}
+                            {% endif %}
+                        </address>
+                    </div>
+                </div>
 
-            <a href="{{ path('app_order_list') }}" class="btn btn-outline-secondary w-100 mt-3">
-                <i class="fas fa-arrow-left me-2"></i>
-                Retour à mes commandes
-            </a>
+                {% if order.status == 'pending' %}
+                    <a href="{{ path('app_order_checkout', { id: order.id }) }}" class="btn-pay">
+                        Payer la commande
+                    </a>
+                {% endif %}
+
+                <a href="{{ path('app_order_list') }}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à mes commandes
+                </a>
+            </div>
         </div>
     </div>
 </div>

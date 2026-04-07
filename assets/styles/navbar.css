@@ -139,7 +139,7 @@
 }
 
 .navbar-link:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: var(--text-light);
     transform: translateX(5px);
 }
@@ -189,7 +189,7 @@
     color: var(--text-dark);
     text-decoration: none;
     font-size: 0.9rem;
-    border-left: 2px solid var(--secondary-color);
+    border-left: 2px solid var(--primary-color);
     margin-bottom: 0.25rem;
     transition: all var(--transition);
 }
@@ -205,17 +205,56 @@
 .navbar-icons {
     display: flex;
     justify-content: center;
-    /* width: 100%; */
-    gap: 0.5rem;
+    gap: 1rem;
     padding-top: 1rem;
     border-top: 1px solid #e0e0e0;
     margin-top: 1rem;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.navbar-icons .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem !important;
+    width: auto;
+    white-space: nowrap;
 }
 
 .icon-link {
     position: relative;
     font-size: 1.5rem;
-    padding: 0.5rem !important;
+    /* padding: 0.5rem !important; */
+}
+
+.account-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.account-dropdown .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    left: auto;
+    z-index: 1100;
+}
+
+.account-dropdown .dropdown-toggle {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+}
+
+.navbar-icons .navbar-link:hover,
+.navbar-icons .navbar-link:focus,
+.account-dropdown .dropdown-toggle:hover,
+.account-dropdown .dropdown-toggle:focus {
+    transform: none;
 }
 
 .cart-badge {
@@ -297,7 +336,7 @@
     .dropdown-menu {
         position: absolute;
         top: 100%;
-        left: 0;
+        right: -30px;
         background-color: var(--background-light);
         box-shadow: 0 4px 8px var(--shadow);
         border-radius: 8px;
@@ -323,7 +362,7 @@
     }
     
     .dropdown-link:hover {
-        background-color: var(--secondary-color);
+        background-color: var(--primary-color);
         color: var(--text-light);
         padding-left: 1rem;
     }
@@ -333,6 +372,15 @@
         padding-top: 0;
         margin-top: 0;
     }
+
+    @media (min-width: 768px) {
+    .account-dropdown .dropdown-menu {
+        top: calc(100% + 0.5rem);
+        /* right: 0; */
+        left: auto;
+        transform: translateX(0);
+    }
+}
 }
 
 /* ========================================

@@ -43,13 +43,31 @@ class CartService
             $cart[$variantId] = new CartItem(
                 $variantId,
                 $variant->getProduct()->getName(),
-                (int) ((float) $variant->getPrice() * 100) // conversion propre
+                $variant->getVariantName(),
+                (int) round(((float) $variant->getPrice()) * 100)
             );
         }
 
         $this->save($cart);
     }
-    
+
+    /**
+     * Met à jour la quantité d'un item du panier
+     */
+    public function updateQuantity(int $variantId, int $quantity): void
+    {
+        if ($quantity < 1) {
+            $this->removeItem($variantId);
+            return;
+        }
+
+        $cart = $this->getCart();
+        
+        if (isset($cart[$variantId])) {
+            $cart[$variantId]->setQuantity($quantity);
+            $this->save($cart);
+        }
+    }
 
     /**
      * @return \App\Model\CartItem[]|array<int, \App\Model\CartItem>
@@ -75,10 +93,10 @@ class CartService
         return $filtered;
     }
 
-    public function removeItem(int $productId): void
+    public function removeItem(int $variantId): void
     {
         $cart = $this->getCart();
-        unset($cart[$productId]);
+        unset($cart[$variantId]);
         $this->save($cart);
     }
 

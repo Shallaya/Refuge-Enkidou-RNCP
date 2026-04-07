@@ -3,97 +3,97 @@
 {% block title %}Commande annulée{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-warning">
-                <div class="card-body text-center p-5">
-                    <div class="mb-4">
-                        <i class="fas fa-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
+<div class="page-order-cancelled">
+    <div class="container">
+        <div class="cancelled-wrapper">
+            {# Card principale #}
+            <div class="cancelled-card">
+                <div class="cancelled-card__body">
+                    <div class="cancelled-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     
-                    <h1 class="mb-3">Paiement annulé</h1>
-                    <p class="lead text-muted">Votre commande n'a pas été finalisée.</p>
+                    <h1 class="cancelled-title">Paiement annulé</h1>
+                    <p class="cancelled-lead">Votre commande n'a pas été finalisée.</p>
                     
-                    <div class="alert alert-warning my-4">
+                    <div class="alert alert-warning">
                         <strong>Numéro de commande :</strong> {{ order.reference }}<br>
-                        <small class="text-muted">Cette commande est en attente de paiement</small>
+                        <small>Cette commande est en attente de paiement</small>
                     </div>
 
-                    <div class="my-4">
-                        <h5 class="mb-3">Que s'est-il passé ?</h5>
-                        <p class="text-muted">
+                    <div class="cancelled-section">
+                        <h5 class="cancelled-section__title">Que s'est-il passé ?</h5>
+                        <p class="cancelled-section__text">
                             Vous avez annulé le paiement ou la session a expiré.<br>
                             Votre commande a été enregistrée mais n'est pas encore payée.
                         </p>
                     </div>
 
-                    <div class="mb-4">
-                        <h5 class="mb-3">Récapitulatif de votre commande</h5>
-                        <div class="text-start bg-light p-3 rounded">
+                    <div class="cancelled-section">
+                        <h5 class="cancelled-section__title">Récapitulatif de votre commande</h5>
+                        <div class="order-summary">
                             {% for item in order.orderItems %}
-                                <div class="d-flex justify-content-between mb-2">
+                                <div class="order-summary__item">
                                     <span>{{ item.productName }} x{{ item.quantity }}</span>
-                                    <span>{{ (item.total / 100)|number_format(2, ',', ' ') }} €</span>
+                                    <span>{{ (item.total)|number_format(2, ',', ' ') }} €</span>
                                 </div>
                             {% endfor %}
-                            <hr>
-                            <div class="d-flex justify-content-between">
+                            <hr class="order-summary__divider">
+                            <div class="order-summary__total">
                                 <strong>Total</strong>
-                                <strong class="text-warning">{{ (order.totalAmount / 100)|number_format(2, ',', ' ') }} €</strong>
+                                <strong class="order-summary__total-amount">{{ (order.totalAmount)|number_format(2, ',', ' ') }} €</strong>
                             </div>
                         </div>
                     </div>
 
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="fas fa-info-circle"></i>
                         <small>
                             Votre panier a été conservé. Vous pouvez finaliser votre commande à tout moment.
                         </small>
                     </div>
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-                        <a href="{{ path('app_order_checkout') }}" class="btn btn-warning btn-lg">
-                            <i class="fas fa-credit-card me-2"></i>
+                    <div class="action-buttons">
+                        <a href="{{ path('app_order_checkout') }}" class="btn-retry">
+                            <i class="fas fa-credit-card"></i>
                             Réessayer le paiement
                         </a>
-                        <a href="{{ path('app_order_list') }}" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-list me-2"></i>
+                        <a href="{{ path('app_order_list') }}" class="btn-orders">
+                            <i class="fas fa-list"></i>
                             Mes commandes
                         </a>
                     </div>
 
-                    <div class="mt-4">
-                        <a href="{{ path('app_cart_index') }}" class="text-muted">
-                            <i class="fas fa-shopping-cart me-1"></i>
+                    <div class="secondary-link">
+                        <a href="{{ path('app_cart_index') }}" class="secondary-link">
+                            <i class="fas fa-shopping-cart"></i>
                             Retour au panier
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="fas fa-question-circle text-primary me-2"></i>
+            {# Card d'aide #}
+            <div class="help-card">
+                <div class="help-card__body">
+                    <h5 class="help-card__title">
+                        <i class="fas fa-question-circle"></i>
                         Besoin d'aide ?
                     </h5>
-                    <p class="card-text text-muted mb-3">
+                    <p class="help-card__text">
                         Si vous rencontrez des difficultés avec le paiement, voici quelques solutions :
                     </p>
-                    <ul class="text-muted">
+                    <ul class="help-card__list">
                         <li>Vérifiez que votre carte bancaire est valide et dispose de fonds suffisants</li>
                         <li>Assurez-vous que votre navigateur autorise les fenêtres pop-up</li>
                         <li>Essayez avec un autre moyen de paiement</li>
                         <li>Contactez notre service client si le problème persiste</li>
                     </ul>
                     
-                    <div class="mt-3">
-                        <a href="mailto:support@refugeenkidou.com" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-envelope me-1"></i>
-                            Contacter le support
-                        </a>
-                    </div>
+                    <a href="mailto:support@refuge-enkidou.com" class="btn-support">
+                        <i class="fas fa-envelope"></i>
+                        Contacter le support
+                    </a>
                 </div>
             </div>
         </div>

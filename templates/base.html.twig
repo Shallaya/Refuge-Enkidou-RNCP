@@ -3,11 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Bienvenue au Le Refuge d'Enkidou{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <link rel="preload" as="image" href="{{ asset('images/logo.png') }}">
         
-        {% block stylesheets %}            
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('styles/app.css') }}" data-turbo-track="reload">
+			<link rel="stylesheet" href="{{ asset('styles/navbar.css') }}" data-turbo-track="reload">
+			<link rel="stylesheet" href="{{ asset('styles/home.css') }}" data-turbo-track="reload">
+            <link rel="stylesheet" href="{{ asset('styles/form.css') }}" data-turbo-track="reload">
+            <link rel="stylesheet" href="{{ asset('styles/cart.css') }}" data-turbo-track="reload">
+            <link rel="stylesheet" href="{{ asset('styles/order.css') }}" data-turbo-track="reload">
+            <link rel="stylesheet" href="{{ asset('styles/product.css') }}" data-turbo-track="reload">
+            <link rel="stylesheet" href="{{ asset('styles/checkout.css') }}" data-turbo-track="reload">
         {% endblock %}
 
         {% block javascripts %}
@@ -20,6 +28,7 @@
     <body>
         {% include "components/_navbar.html.twig" %}
 
+        <main>
         {# affichage des messages flash #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -33,6 +42,9 @@
         {% endfor %}
 
         {% block body %}{% endblock %}
+        </main>
+
+        {% include "components/_reassurance.html.twig" %}
         {% include "components/_footer.html.twig" %}
     </body>
 </html>

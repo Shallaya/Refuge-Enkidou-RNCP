@@ -81,7 +81,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
             [
                 'productName' => 'Brosse Bois Écologique',
                 'material' => 'Bois FSC',
-                'price' => '18.90',
+                'price' => '22.90',
                 'color' => 'jaune',
                 'size' => 'M',
                 'stock' => 15,
@@ -89,7 +89,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
             [
                 'productName' => 'Brosse Bois Écologique',
                 'material' => 'Bois FSC',
-                'price' => '18.90',
+                'price' => '22.90',
                 'color' => 'vert',
                 'size' => 'M',
                 'stock' => 15,
