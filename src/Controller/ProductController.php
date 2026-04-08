@@ -6,6 +6,7 @@ use App\Entity\ProductVariant;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ProductController extends AbstractController
@@ -14,10 +15,13 @@ class ProductController extends AbstractController
      * Affiche la liste de tous les produits
      */
     #[Route('/produits', name: 'app_product_list')]
-    public function list(): Response
+    public function list(ProductRepository $productRepository): Response
     {
-        // Pour plus tard : afficher tous les produits avec filtres
-        return $this->render('product/list.html.twig');
+        $products = $productRepository->findAll();
+
+        return $this->render('product/list.html.twig', [
+            'products' => $products,
+        ]);
     }
     
     /**
@@ -60,6 +64,35 @@ class ProductController extends AbstractController
             'product' => $product,
             'variants' => $activeVariants,
             'currentPetType' => $currentPetType,
+        ]);
+    }
+
+    /**
+     * Affiche les résultats de recherche de produits
+     */
+    #[Route('/recherche', name: 'app_product_search')]
+    public function search(Request $request, ProductRepository $productRepository): Response
+    {
+        $query = trim((string) $request->query->get('q', ''));
+
+        $products = [];
+
+        if ($query !== '') {
+            $products = $productRepository
+                ->createQueryBuilder('p')
+                ->leftJoin('p.petTypes', 'pt')->addSelect('pt')
+                ->where('p.isActive = :active')
+                ->andWhere('p.name LIKE :q OR p.shortDescription LIKE :q')
+                ->setParameter('active', true)
+                ->setParameter('q', '%' . $query . '%')
+                ->orderBy('p.name', 'ASC')
+                ->getQuery()
+                ->getResult();
+        }
+
+        return $this->render('product/search.html.twig', [
+            'products' => $products,
+            'query' => $query,
         ]);
     }
 }

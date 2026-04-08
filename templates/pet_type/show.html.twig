@@ -45,11 +45,14 @@
                     {% if products|length > 0 %}
                         {# Grouper les produits par sous-catégorie si nécessaire #}
                         {% set hasSubCategories = false %}
-                        {% for product in products %}
-                            {% if product.category.parent %}
-                                {% set hasSubCategories = true %}
-                            {% endif %}
-                        {% endfor %}
+                        {# On regroupe par sous-catégories seulement si la catégorie sélectionnée est une catégorie parente #}
+                        {% if selectedCategory and selectedCategory.parent is null %}
+                            {% for product in products %}
+                                {% if product.category.parent %}
+                                    {% set hasSubCategories = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                         
                         {% if hasSubCategories %}
                             {# Grouper par sous-catégorie #}

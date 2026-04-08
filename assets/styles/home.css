@@ -832,12 +832,54 @@ h1.section-title {
 }
 
 /* ──────────────────────────────────────────
+   PAGE A PROPOS
+────────────────────────────────────────── */
+
+.page-about {
+    padding: var(--space-lg, 2.5rem) 0 4rem;
+    margin: var(--space-sm);
+    min-height: 70vh;
+}
+
+.page-about .container {
+    max-width: var(--max-width, 1200px);
+    margin: 0 auto;
+    padding: 0 var(--space-sm, 1rem);
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-sand);
+    padding: var(--space-sm) var(--space-md);
+}
+
+.page-about h1 {
+    font-family: var(--font-display, "Playfair Display", serif);
+    color: var(--color-soil);
+    margin-bottom: var(--space-sm, 1rem);
+    text-align: center;
+}
+
+.page-about p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-bark);
+    margin-bottom: var(--space-md, 1.5rem);
+    text-align: justify;
+}
+
+.about-image {
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: var(--space-md, 1.5rem) auto;
+}
+
+/* ──────────────────────────────────────────
    PAGES LÉGALES
 ────────────────────────────────────────── */
 
 .legal {
     padding-block: var(--space-xl);
-     margin: var(--space-sm);
+    margin: var(--space-sm);
 }
 
 .legal__content {

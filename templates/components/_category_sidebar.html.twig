@@ -48,13 +48,21 @@
             {% endfor %}
 
             {% for parentCategory in parentCategories %}
+                {% set parentCount = parentCategory.products|length %}
+
+                {% if parentCategory.children|length > 0 %}
+                    {% for childCategory in parentCategory.children %}
+                        {% set parentCount = parentCount + (childCategory.products|length) %}
+                    {% endfor %}
+                {% endif %}
+
                 <li class="category-sidebar__item category-sidebar__item--parent">
                     <a href="{{ path('app_pet_type_show', {slug: petType.slug, category: parentCategory.slug}) }}" 
-                       class="category-sidebar__link {% if selectedCategorySlug == parentCategory.slug %}category-sidebar__link--active{% endif %}"
-                       {% if selectedCategorySlug == parentCategory.slug %}aria-current="page"{% endif %}>
+                    class="category-sidebar__link {% if selectedCategorySlug == parentCategory.slug %}category-sidebar__link--active{% endif %}"
+                    {% if selectedCategorySlug == parentCategory.slug %}aria-current="page"{% endif %}>
                         <span class="category-sidebar__icon">{{ _self.getCategoryIcon(parentCategory.name) }}</span>
                         <span class="category-sidebar__name">{{ parentCategory.name }}</span>
-                        <span class="category-sidebar__count">{{ parentCategory.products|length }}</span>
+                        <span class="category-sidebar__count">{{ parentCount }}</span>
                     </a>
 
                     {# Sous-catégories (enfants) #}
@@ -63,8 +71,8 @@
                             {% for childCategory in parentCategory.children %}
                                 <li class="category-sidebar__item category-sidebar__item--child">
                                     <a href="{{ path('app_pet_type_show', {slug: petType.slug, category: childCategory.slug}) }}" 
-                                       class="category-sidebar__link {% if selectedCategorySlug == childCategory.slug %}category-sidebar__link--active{% endif %}"
-                                       {% if selectedCategorySlug == childCategory.slug %}aria-current="page"{% endif %}>
+                                    class="category-sidebar__link {% if selectedCategorySlug == childCategory.slug %}category-sidebar__link--active{% endif %}"
+                                    {% if selectedCategorySlug == childCategory.slug %}aria-current="page"{% endif %}>
                                         <span class="category-sidebar__name">{{ childCategory.name }}</span>
                                         <span class="category-sidebar__count">{{ childCategory.products|length }}</span>
                                     </a>

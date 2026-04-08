@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tous les produits - Le Refuge d'Enkidou{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="product-list__title">
+            <h1>🐾 Tous nos produits</h1>
+            <p class="page-header__subtitle">
+                Découvrez notre sélection complète de produits naturels pour vos compagnons.
+            </p>
+        </div>
+
+        <nav aria-label="Breadcrumb" class="breadcrumb">
+            <a href="{{ path('home') }}">Accueil</a>
+            /
+            <span>Tous les produits</span>
+        </nav>
+
+        {% if products is empty %}
+            <p>Aucun produit disponible pour le moment.</p>
+        {% else %}
+            <div class="products__grid">
+                
+                {% for product in products %}
+                    
+                    {# 👉 On récupère UN petType depuis la collection #}
+                    {% set petType = product.petTypes|first %}
+                    
+                    {# 👉 On vérifie qu'il existe pour éviter les erreurs #}
+                    {% if petType %}
+                        {% include 'components/_product_card.html.twig' with {
+                            product: product,
+                            petType: petType
+                        } %}
+                    {% else %}
+                        {# Optionnel : si aucun petType, on affiche quand même sans lien #}
+                        {% include 'components/_product_card.html.twig' with {
+                            product: product,
+                            petType: null
+                        } %}
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

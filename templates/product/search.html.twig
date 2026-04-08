@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de recherche{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="search-results-header">
+            <h1 class="section-title">
+                Résultats pour "{{ query }}"
+            </h1>
+        </div>
+
+        {% if products is empty %}
+            <p class="text-center">Aucun produit trouvé.</p>
+        {% else %}
+            <div class="products__grid">
+                {% for product in products %}
+                    {% set petType = product.petTypes|first %}
+
+                    {% if petType %}
+                        {% include 'components/_product_card.html.twig' with {
+                            product: product,
+                            petType: petType
+                        } only %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

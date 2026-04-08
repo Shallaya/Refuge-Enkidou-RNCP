@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use App\Form\ProductVariantType;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -112,5 +113,45 @@ class ProductCrudController extends AbstractCrudController
             ->add('category')
             ->add('petTypes')
             ->add('isActive');
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Product) {
+            parent::persistEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        // Si le produit a déjà un ID, ce n'est pas une vraie création classique
+        // on laisse EasyAdmin gérer normalement
+        if ($entityInstance->getId() !== null) {
+            parent::persistEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        // On garde les variantes temporairement de côté
+        $variants = [];
+        foreach ($entityInstance->getProductVariants() as $variant) {
+            $variants[] = $variant;
+        }
+
+        // On retire temporairement les variantes de la collection
+        // pour persister d'abord le produit seul
+        foreach ($variants as $variant) {
+            $entityInstance->removeProductVariant($variant);
+        }
+
+        // 1) Persister le produit seul pour obtenir son ID réel
+        $entityManager->persist($entityInstance);
+        $entityManager->flush();
+
+        // 2) Rattacher les variantes au produit maintenant que l'ID existe
+        foreach ($variants as $variant) {
+            $entityInstance->addProductVariant($variant);
+            $entityManager->persist($variant);
+        }
+
+        // 3) Persister les variantes
+        $entityManager->flush();
     }
 }
