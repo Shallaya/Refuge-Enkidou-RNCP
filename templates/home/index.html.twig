@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Le Refuge d'Enkidou{% endblock %}
+{% set no_reassurance_margin = true %}
+
+{% block title %}Au Refuge d'Enkidou{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -240,7 +242,7 @@
 
 
 {# =============================================
-   BANNIÈRE CTA FINALE
+   BANNIÈRE CTA FINALE (Call To Action)
    ============================================= #}
 <section class="cta-banner" aria-labelledby="cta-title">
     <div class="container">

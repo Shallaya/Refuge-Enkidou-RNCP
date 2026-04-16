@@ -33,6 +33,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'weightUnit' => 'g',
                 'price' => '9.90',
                 'stock' => 50,
+                'variantName' => '80g',
             ],
             [
                 'productName' => 'Shampoing Solide Bio Chien',
@@ -40,6 +41,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'weightUnit' => 'g',
                 'price' => '14.90',
                 'stock' => 30,
+                'variantName' => '120g',
             ],
             [
                 'productName' => 'Shampoing Solide Bio Chat',
@@ -47,6 +49,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'weightUnit' => 'g',
                 'price' => '12.90',
                 'stock' => 40,
+                'variantName' => '80g',
             ],
             [
                 'productName' => 'Shampoing Solide Bio Chat',
@@ -54,6 +57,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'weightUnit' => 'g',
                 'price' => '18.90',
                 'stock' => 20,
+                'variantName' => '120g',
             ],
             [
                 'productName' => 'Baume Coussinets Naturel',
@@ -61,6 +65,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'volumeUnit' => 'ml',
                 'price' => '12.90',
                 'stock' => 25,
+                'variantName' => '30ml',
             ],
             [
                 'productName' => 'Brosse Bois Écologique',
@@ -69,6 +74,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'color' => 'jaune',
                 'size' => 'S',
                 'stock' => 15,
+                'variantName' => 'S Jaune',
             ],
             [
                 'productName' => 'Brosse Bois Écologique',
@@ -77,6 +83,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'color' => 'vert',
                 'size' => 'S',
                 'stock' => 15,
+                'variantName' => 'S Vert',
             ],
             [
                 'productName' => 'Brosse Bois Écologique',
@@ -85,6 +92,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'color' => 'jaune',
                 'size' => 'M',
                 'stock' => 15,
+                'variantName' => 'M Jaune',
             ],
             [
                 'productName' => 'Brosse Bois Écologique',
@@ -93,6 +101,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 'color' => 'vert',
                 'size' => 'M',
                 'stock' => 15,
+                'variantName' => 'M Vert',
             ],
         ];
 
@@ -123,7 +132,8 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 ->setProduct($product)
                 ->setStock($data['stock'])
                 ->setPrice($data['price'])
-                ->setIsActive(true);
+                ->setIsActive(true)
+                ->setVariantName($data['variantName'] ?? null);
 
             // setters dynamiques
             foreach (self::FIELD_MAP as $field => $setter) {

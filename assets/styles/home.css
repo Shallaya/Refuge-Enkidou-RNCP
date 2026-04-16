@@ -724,7 +724,11 @@ h1.section-title {
     background-color: var(--color-cream);
     padding: var(--space-sm) 0;
     border-top: 1px solid var(--color-sand);
-    margin-top: var(--space-lg);
+    /* margin-top: var(--space-lg); */
+}
+
+.banner.with-margin {
+  margin-top: var(--space-lg);
 }
 
 .reassurance__grid {

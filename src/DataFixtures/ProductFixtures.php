@@ -44,37 +44,36 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 'name' => 'Shampoing Solide Bio Chien',
                 'code' => 'SHAMP-SOL',
                 'category' => $soinsChien,
-                'petType' => $chien
+                'petType' => $chien,
+                'image' => 'shampoing-solide-bio-chien.webp',
             ],
             [
                 'name' => 'Shampoing Solide Bio Chat',
                 'code' => 'SHAMP-SOL',
                 'category' => $soinsChat,
-                'petType' => $chat
+                'petType' => $chat,
+                'image' => 'shampoing-solide-bio-chat.webp',
             ],
             [
                 'name' => 'Baume Coussinets Naturel',
                 'code' => 'BAUME-COUS',
                 'category' => $soinsChien,
-                'petType' => $chien
+                'petType' => $chien, $chat,
+                'image' => 'baume-coussinets-naturel.webp',
             ],
             [
-                'name' => 'Baume Coussinets Naturel',
-                'code' => 'BAUME-COUS',
-                'category' => $soinsChat,
-                'petType' => $chat
-            ],
-            [
-                'name' => 'Dentifrice Solide Naturel',
-                'code' => 'DENT-SOL',
+                'name' => 'Dentifrice Gel Naturel',
+                'code' => 'DENT-GEL',
                 'category' => $soinsChien,
-                'petType' => $chien
+                'petType' => $chien, $chat,
+                'image' => 'dentifrice-gel-naturel.webp',
             ],
             [
                 'name' => 'Brosse Bois Écologique',
                 'code' => 'BROS-BOIS',
                 'category' => $toilettageChien,
-                'petType' => $chien
+                'petType' => $chien,
+                'image' => 'brosse-bois-ecologique.webp',
             ],
         ];
 
@@ -89,7 +88,8 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setCode($data['code'])
                 ->setCategory($data['category'])
-                ->setPetType($data['petType']);
+                ->addPetType($data['petType'])
+                ->setImage($data['image'] ?? null);
 
             $manager->persist($product);
         }
